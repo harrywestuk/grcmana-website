@@ -159,7 +159,26 @@ export interface Page {
   id: number;
   title: string;
   hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    type: 'none' | 'grcmana' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    /**
+     * Short label above the headline. Max 3 words, no trailing punctuation.
+     */
+    eyebrow?: string | null;
+    heading?: string | null;
+    /**
+     * Italic Signal-yellow phrase on the second line of the headline.
+     */
+    headingAccent?: string | null;
+    body?: string | null;
+    /**
+     * Certification labels shown below the CTAs.
+     */
+    trustBadges?:
+      | {
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
     richText?: {
       root: {
         type: string;
@@ -201,7 +220,21 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | ProofStripBlock
+    | ServicesBlock
+    | FrameworkBlock
+    | MetricsBandBlock
+    | TestimonialBlock
+    | ProductPreviewBlock
+    | CommunityStripBlock
+    | CtaCloseBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -784,6 +817,271 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProofStripBlock".
+ */
+export interface ProofStripBlock {
+  /**
+   * Small muted label above the proof items (e.g. "Founders closing enterprise deals").
+   */
+  label?: string | null;
+  items?:
+    | {
+        client: string;
+        /**
+         * One sentence, one outcome, past tense. DM Serif Display italic.
+         */
+        outcome: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'proofStrip';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock".
+ */
+export interface ServicesBlock {
+  /**
+   * Max 3 words, no trailing punctuation.
+   */
+  eyebrow?: string | null;
+  heading?: string | null;
+  /**
+   * The italic Signal-yellow word or phrase in the headline.
+   */
+  headingAccent?: string | null;
+  body?: string | null;
+  items?:
+    | {
+        /**
+         * e.g. "01 — Compliance"
+         */
+        number?: string | null;
+        /**
+         * Unicode glyph character e.g. ⬡ ◈ ◎
+         */
+        icon?: string | null;
+        title: string;
+        body: string;
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'services';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FrameworkBlock".
+ */
+export interface FrameworkBlock {
+  /**
+   * Max 3 words, no trailing punctuation.
+   */
+  eyebrow?: string | null;
+  heading?: string | null;
+  headingAccent?: string | null;
+  body?: string | null;
+  phases?:
+    | {
+        /**
+         * e.g. "Phase 01"
+         */
+        number?: string | null;
+        label: string;
+        description?: string | null;
+        /**
+         * Highlights this phase in Signal yellow.
+         */
+        isActive?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'framework';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MetricsBandBlock".
+ */
+export interface MetricsBandBlock {
+  metrics?:
+    | {
+        /**
+         * Large display number e.g. "73%", "6wk", "£2.8M".
+         */
+        value: string;
+        /**
+         * Short DM Mono label below the value.
+         */
+        qualifier?: string | null;
+        /**
+         * Supporting sentence explaining the metric.
+         */
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'metricsBand';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialBlock".
+ */
+export interface TestimonialBlock {
+  /**
+   * Full quote text. One to three sentences.
+   */
+  quote: string;
+  /**
+   * Exact phrase from the quote to highlight in Signal yellow. Max 6 words.
+   */
+  boldedPhrase?: string | null;
+  authorName: string;
+  /**
+   * e.g. "Founder & CEO, RegTech Ltd."
+   */
+  authorRole: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonial';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductPreviewBlock".
+ */
+export interface ProductPreviewBlock {
+  /**
+   * Max 3 words, no trailing punctuation.
+   */
+  eyebrow?: string | null;
+  heading?: string | null;
+  headingAccent?: string | null;
+  body?: string | null;
+  /**
+   * Screenshot or dashboard image shown inside the chrome-bar card.
+   */
+  previewImage: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productPreview';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityStripBlock".
+ */
+export interface CommunityStripBlock {
+  /**
+   * Small muted DM Mono label above the headline.
+   */
+  overline?: string | null;
+  headline?: string | null;
+  /**
+   * The Signal-yellow portion of the headline text.
+   */
+  headlineAccent?: string | null;
+  /**
+   * Large display number e.g. "16k+".
+   */
+  statValue?: string | null;
+  /**
+   * Small muted label below the stat value.
+   */
+  statLabel?: string | null;
+  cta: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'communityStrip';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaCloseBlock".
+ */
+export interface CtaCloseBlock {
+  /**
+   * Max 3 words, no trailing punctuation.
+   */
+  eyebrow?: string | null;
+  heading?: string | null;
+  headingAccent?: string | null;
+  /**
+   * One or two tight lines. No padding copy.
+   */
+  body?: string | null;
+  primaryCta: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  secondaryCta: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  /**
+   * Small muted DM Mono line below CTAs e.g. "No commitment · Fixed-fee only".
+   */
+  note?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'ctaClose';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1064,6 +1362,16 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         type?: T;
+        eyebrow?: T;
+        heading?: T;
+        headingAccent?: T;
+        body?: T;
+        trustBadges?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
         richText?: T;
         links?:
           | T
@@ -1090,6 +1398,14 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        proofStrip?: T | ProofStripBlockSelect<T>;
+        services?: T | ServicesBlockSelect<T>;
+        framework?: T | FrameworkBlockSelect<T>;
+        metricsBand?: T | MetricsBandBlockSelect<T>;
+        testimonial?: T | TestimonialBlockSelect<T>;
+        productPreview?: T | ProductPreviewBlockSelect<T>;
+        communityStrip?: T | CommunityStripBlockSelect<T>;
+        ctaClose?: T | CtaCloseBlockSelect<T>;
       };
   meta?:
     | T
@@ -1186,6 +1502,167 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProofStripBlock_select".
+ */
+export interface ProofStripBlockSelect<T extends boolean = true> {
+  label?: T;
+  items?:
+    | T
+    | {
+        client?: T;
+        outcome?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock_select".
+ */
+export interface ServicesBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  headingAccent?: T;
+  body?: T;
+  items?:
+    | T
+    | {
+        number?: T;
+        icon?: T;
+        title?: T;
+        body?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FrameworkBlock_select".
+ */
+export interface FrameworkBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  headingAccent?: T;
+  body?: T;
+  phases?:
+    | T
+    | {
+        number?: T;
+        label?: T;
+        description?: T;
+        isActive?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MetricsBandBlock_select".
+ */
+export interface MetricsBandBlockSelect<T extends boolean = true> {
+  metrics?:
+    | T
+    | {
+        value?: T;
+        qualifier?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialBlock_select".
+ */
+export interface TestimonialBlockSelect<T extends boolean = true> {
+  quote?: T;
+  boldedPhrase?: T;
+  authorName?: T;
+  authorRole?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductPreviewBlock_select".
+ */
+export interface ProductPreviewBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  headingAccent?: T;
+  body?: T;
+  previewImage?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CommunityStripBlock_select".
+ */
+export interface CommunityStripBlockSelect<T extends boolean = true> {
+  overline?: T;
+  headline?: T;
+  headlineAccent?: T;
+  statValue?: T;
+  statLabel?: T;
+  cta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaCloseBlock_select".
+ */
+export interface CtaCloseBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  headingAccent?: T;
+  body?: T;
+  primaryCta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  secondaryCta?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
+  note?: T;
   id?: T;
   blockName?: T;
 }
@@ -1639,6 +2116,18 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: number;
+  logo?: {
+    /**
+     * Primary logo text (DM Mono, uppercase).
+     */
+    mark?: string | null;
+    sub?: string | null;
+    /**
+     * SVG or image logo — overrides the text mark when set.
+     */
+    image?: (number | null) | Media;
+  };
+  favicon?: (number | null) | Media;
   navItems?:
     | {
         link: {
@@ -1659,6 +2148,46 @@ export interface Header {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Ghost-style CTA left of the primary button.
+   */
+  utilityCta: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: number | Post;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+  };
+  /**
+   * Signal-filled primary CTA — e.g. "Book a Call →".
+   */
+  primaryCta: {
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?:
+        | ({
+            relationTo: 'pages';
+            value: number | Page;
+          } | null)
+        | ({
+            relationTo: 'posts';
+            value: number | Post;
+          } | null);
+      url?: string | null;
+      label: string;
+    };
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1668,26 +2197,54 @@ export interface Header {
  */
 export interface Footer {
   id: number;
-  navItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
+  brand?: {
+    name?: string | null;
+    sub?: string | null;
+    /**
+     * Short description paragraph below the brand name.
+     */
+    tagline?: string | null;
+    /**
+     * Outlined cert badges e.g. "ISO 27001", "Cyber Essentials".
+     */
+    certBadges?:
+      | {
           label: string;
-        };
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Footer navigation columns (e.g. Solutions, Framework, Resources, Company).
+   */
+  columns?:
+    | {
+        heading: string;
+        links?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?:
+                  | ({
+                      relationTo: 'pages';
+                      value: number | Page;
+                    } | null)
+                  | ({
+                      relationTo: 'posts';
+                      value: number | Post;
+                    } | null);
+                url?: string | null;
+                label: string;
+              };
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
+  copyright?: string | null;
+  registration?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1696,6 +2253,14 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  logo?:
+    | T
+    | {
+        mark?: T;
+        sub?: T;
+        image?: T;
+      };
+  favicon?: T;
   navItems?:
     | T
     | {
@@ -1709,6 +2274,32 @@ export interface HeaderSelect<T extends boolean = true> {
               label?: T;
             };
         id?: T;
+      };
+  utilityCta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+      };
+  primaryCta?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1719,20 +2310,41 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+  brand?:
     | T
     | {
-        link?:
+        name?: T;
+        sub?: T;
+        tagline?: T;
+        certBadges?:
           | T
           | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
               label?: T;
+              id?: T;
+            };
+      };
+  columns?:
+    | T
+    | {
+        heading?: T;
+        links?:
+          | T
+          | {
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              id?: T;
             };
         id?: T;
       };
+  copyright?: T;
+  registration?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -77,6 +77,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       label: 'Document to link to',
       relationTo: ['pages', 'posts'],
       required: true,
+      validate: (value: unknown, { siblingData }: { siblingData?: Record<string, unknown> }): true | string => {
+        if (siblingData?.type === 'reference' && !value) return 'This field is required.'
+        return true
+      },
     },
     {
       name: 'url',
@@ -86,6 +90,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: 'Custom URL',
       required: true,
+      validate: (value: unknown, { siblingData }: { siblingData?: Record<string, unknown> }): true | string => {
+        if (siblingData?.type === 'custom' && !value) return 'This field is required.'
+        return true
+      },
     },
   ]
 

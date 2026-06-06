@@ -1,8 +1,8 @@
-import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
+import type { CollectionSlug, Payload, PayloadRequest, File } from 'payload'
 
 import { contactForm as contactFormData } from './contact-form'
 import { contact as contactPageData } from './contact-page'
-import { home } from './home'
+import { homeGrcmana } from './home-grcmana'
 import { image1 } from './image-1'
 import { image2 } from './image-2'
 import { imageHero1 } from './image-hero-1'
@@ -20,8 +20,6 @@ const collections: CollectionSlug[] = [
   'search',
 ]
 
-const globals: GlobalSlug[] = ['header', 'footer']
-
 const categories = ['Technology', 'News', 'Finance', 'Design', 'Software', 'Engineering']
 
 // Next.js revalidation errors are normal when seeding the database without a server running
@@ -37,27 +35,7 @@ export const seed = async ({
 }): Promise<void> => {
   payload.logger.info('Seeding database...')
 
-  // we need to clear the media directory before seeding
-  // as well as the collections and globals
-  // this is because while `yarn seed` drops the database
-  // the custom `/api/seed` endpoint does not
-  payload.logger.info(`— Clearing collections and globals...`)
-
-  // clear the database
-  await Promise.all(
-    globals.map((global) =>
-      payload.updateGlobal({
-        slug: global,
-        data: {
-          navItems: [],
-        },
-        depth: 0,
-        context: {
-          disableRevalidate: true,
-        },
-      }),
-    ),
-  )
+  payload.logger.info(`— Clearing collections...`)
 
   await Promise.all(
     collections.map((collection) => payload.db.deleteMany({ collection, req, where: {} })),
@@ -83,7 +61,7 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding media...`)
 
-  const [image1Buffer, image2Buffer, image3Buffer, hero1Buffer] = await Promise.all([
+  const [image1Buffer, image2Buffer, image3Buffer, previewBuffer] = await Promise.all([
     fetchFileByURL(
       'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post1.webp',
     ),
@@ -98,7 +76,7 @@ export const seed = async ({
     ),
   ])
 
-  const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
+  const [demoAuthor, image1Doc, image2Doc, image3Doc, previewImageDoc] = await Promise.all([
     payload.create({
       collection: 'users',
       data: {
@@ -124,8 +102,11 @@ export const seed = async ({
     }),
     payload.create({
       collection: 'media',
-      data: imageHero1,
-      file: hero1Buffer,
+      data: {
+        ...imageHero1,
+        alt: 'GRCMANA Trust Maturity Assessment — product preview placeholder',
+      },
+      file: previewBuffer,
     }),
     categories.map((category) =>
       payload.create({
@@ -140,8 +121,6 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding posts...`)
 
-  // Do not create posts with `Promise.all` because we want the posts to be created in order
-  // This way we can sort them by `createdAt` or `publishedAt` and they will be in the expected order
   const post1Doc = await payload.create({
     collection: 'posts',
     depth: 0,
@@ -169,27 +148,20 @@ export const seed = async ({
     data: post3({ heroImage: image3Doc, blockImage: image1Doc, author: demoAuthor }),
   })
 
-  // update each post with related posts
   await payload.update({
     id: post1Doc.id,
     collection: 'posts',
-    data: {
-      relatedPosts: [post2Doc.id, post3Doc.id],
-    },
+    data: { relatedPosts: [post2Doc.id, post3Doc.id] },
   })
   await payload.update({
     id: post2Doc.id,
     collection: 'posts',
-    data: {
-      relatedPosts: [post1Doc.id, post3Doc.id],
-    },
+    data: { relatedPosts: [post1Doc.id, post3Doc.id] },
   })
   await payload.update({
     id: post3Doc.id,
     collection: 'posts',
-    data: {
-      relatedPosts: [post1Doc.id, post2Doc.id],
-    },
+    data: { relatedPosts: [post1Doc.id, post2Doc.id] },
   })
 
   payload.logger.info(`— Seeding contact form...`)
@@ -202,77 +174,128 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding pages...`)
 
-  const [_, contactPage] = await Promise.all([
+  const [, contactPage] = await Promise.all([
     payload.create({
       collection: 'pages',
       depth: 0,
-      data: home({ heroImage: imageHomeDoc, metaImage: image2Doc }),
+      context: {
+        disableRevalidate: true,
+      },
+      data: homeGrcmana({ previewImage: previewImageDoc, metaImage: image1Doc }),
     }),
     payload.create({
       collection: 'pages',
       depth: 0,
-      data: contactPageData({ contactForm: contactForm }),
+      context: {
+        disableRevalidate: true,
+      },
+      data: contactPageData({ contactForm }),
     }),
   ])
 
-  payload.logger.info(`— Seeding globals...`)
+  payload.logger.info(`— Seeding header global...`)
 
-  await Promise.all([
-    payload.updateGlobal({
-      slug: 'header',
-      data: {
-        navItems: [
-          {
-            link: {
-              type: 'custom',
-              label: 'Posts',
-              url: '/posts',
-            },
+  await payload.updateGlobal({
+    slug: 'header',
+    data: {
+      logo: {
+        mark: 'GRCMANA',
+        sub: 'Trust Architect',
+      },
+      navItems: [
+        { link: { type: 'custom', label: 'Solutions', url: '/solutions' } },
+        { link: { type: 'custom', label: 'Services', url: '/services' } },
+        { link: { type: 'custom', label: 'Framework', url: '/framework' } },
+        { link: { type: 'custom', label: 'Resources', url: '/resources' } },
+        {
+          link: {
+            type: 'reference',
+            label: 'About',
+            reference: { relationTo: 'pages', value: contactPage.id },
           },
-          {
-            link: {
-              type: 'reference',
-              label: 'Contact',
-              reference: {
-                relationTo: 'pages',
-                value: contactPage.id,
-              },
-            },
-          },
+        },
+      ],
+      utilityCta: {
+        link: {
+          type: 'custom',
+          label: 'Ask the Trust Architect',
+          url: '/ask',
+        },
+      },
+      primaryCta: {
+        link: {
+          type: 'custom',
+          label: 'Book a Call →',
+          url: '/contact',
+        },
+      },
+    },
+  })
+
+  payload.logger.info(`— Seeding footer global...`)
+
+  await payload.updateGlobal({
+    slug: 'footer',
+    data: {
+      brand: {
+        name: 'GRCMANA',
+        sub: 'Part of The Mana Consortium',
+        tagline:
+          'Helping high-growth B2B tech startups close the Enterprise Trust Gap through security, governance, and AI resilience.',
+        certBadges: [
+          { label: 'ISO 27001' },
+          { label: 'ISO 42001' },
+          { label: 'ISO 9001' },
+          { label: 'Cyber Essentials' },
+          { label: 'EU AI Act Ready' },
+          { label: 'NIST AI RMF' },
         ],
       },
-    }),
-    payload.updateGlobal({
-      slug: 'footer',
-      data: {
-        navItems: [
-          {
-            link: {
-              type: 'custom',
-              label: 'Admin',
-              url: '/admin',
-            },
-          },
-          {
-            link: {
-              type: 'custom',
-              label: 'Source Code',
-              newTab: true,
-              url: 'https://github.com/payloadcms/payload/tree/3.x/templates/website',
-            },
-          },
-          {
-            link: {
-              type: 'custom',
-              label: 'Payload',
-              newTab: true,
-              url: 'https://payloadcms.com/',
-            },
-          },
-        ],
-      },
-    }),
-  ])
+      columns: [
+        {
+          heading: 'Solutions',
+          links: [
+            { link: { type: 'custom', label: 'ISO Certification', url: '/solutions/iso-certification' } },
+            { link: { type: 'custom', label: 'AI Governance', url: '/solutions/ai-governance' } },
+            { link: { type: 'custom', label: 'CISO-as-a-Service', url: '/solutions/ciso' } },
+            { link: { type: 'custom', label: 'GRC Retainer', url: '/solutions/grc-retainer' } },
+            { link: { type: 'custom', label: 'Trust Centre', url: '/trust-centre' } },
+          ],
+        },
+        {
+          heading: 'Framework',
+          links: [
+            { link: { type: 'custom', label: 'Trust Architecture', url: '/framework' } },
+            { link: { type: 'custom', label: 'Trust Maturity Model', url: '/framework/maturity-model' } },
+            { link: { type: 'custom', label: 'Enterprise Trust Gap', url: '/framework/trust-gap' } },
+            { link: { type: 'custom', label: 'AI Risk Register', url: '/framework/ai-risk-register' } },
+          ],
+        },
+        {
+          heading: 'Resources',
+          links: [
+            { link: { type: 'custom', label: 'GRC Playbook', url: '/resources/grc-playbook' } },
+            { link: { type: 'custom', label: 'The Trust Collective', url: '/community' } },
+            { link: { type: 'custom', label: 'Blog', url: '/blog' } },
+            { link: { type: 'custom', label: 'Case Studies', url: '/case-studies' } },
+            { link: { type: 'custom', label: 'Cyber Resilience Network', url: '/community/network' } },
+          ],
+        },
+        {
+          heading: 'Company',
+          links: [
+            { link: { type: 'custom', label: 'About GRCMANA', url: '/about' } },
+            { link: { type: 'custom', label: 'Harry — Trust Architect', url: '/about/harry' } },
+            { link: { type: 'custom', label: 'Contact', url: '/contact' } },
+            { link: { type: 'custom', label: 'The Mana Consortium', url: '/consortium', newTab: true } },
+            { link: { type: 'custom', label: 'Privacy Policy', url: '/privacy' } },
+          ],
+        },
+      ],
+      copyright: '© 2025 GRCMANA · Part of The Mana Consortium · All rights reserved',
+      registration: 'Registered in England & Wales',
+    },
+  })
 
   payload.logger.info('Seeded database successfully!')
 }

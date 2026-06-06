@@ -19,25 +19,66 @@ export const hero: Field = {
       defaultValue: 'lowImpact',
       label: 'Type',
       options: [
-        {
-          label: 'None',
-          value: 'none',
-        },
-        {
-          label: 'High Impact',
-          value: 'highImpact',
-        },
-        {
-          label: 'Medium Impact',
-          value: 'mediumImpact',
-        },
-        {
-          label: 'Low Impact',
-          value: 'lowImpact',
-        },
+        { label: 'None', value: 'none' },
+        { label: 'GRCMANA Hero', value: 'grcmana' },
+        { label: 'High Impact', value: 'highImpact' },
+        { label: 'Medium Impact', value: 'mediumImpact' },
+        { label: 'Low Impact', value: 'lowImpact' },
       ],
       required: true,
     },
+    // ── GRCMANA Hero fields ──────────────────────────────────
+    {
+      name: 'eyebrow',
+      type: 'text',
+      label: 'Eyebrow',
+      admin: {
+        condition: (_, { type } = {}) => type === 'grcmana',
+        description: 'Short label above the headline. Max 3 words, no trailing punctuation.',
+      },
+    },
+    {
+      name: 'heading',
+      type: 'text',
+      label: 'Heading',
+      admin: {
+        condition: (_, { type } = {}) => type === 'grcmana',
+      },
+    },
+    {
+      name: 'headingAccent',
+      type: 'text',
+      label: 'Heading accent (italic Signal yellow)',
+      admin: {
+        condition: (_, { type } = {}) => type === 'grcmana',
+        description: 'Italic Signal-yellow phrase on the second line of the headline.',
+      },
+    },
+    {
+      name: 'body',
+      type: 'textarea',
+      label: 'Body copy',
+      admin: {
+        condition: (_, { type } = {}) => type === 'grcmana',
+      },
+    },
+    {
+      name: 'trustBadges',
+      type: 'array',
+      label: 'Trust badges',
+      admin: {
+        condition: (_, { type } = {}) => type === 'grcmana',
+        description: 'Certification labels shown below the CTAs.',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    // ── Shared fields (non-grcmana hero types) ───────────────
     {
       name: 'richText',
       type: 'richText',
@@ -52,6 +93,10 @@ export const hero: Field = {
         },
       }),
       label: false,
+      admin: {
+        condition: (_, { type } = {}) =>
+          ['highImpact', 'mediumImpact', 'lowImpact'].includes(type),
+      },
     },
     linkGroup({
       overrides: {
