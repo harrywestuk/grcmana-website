@@ -4,6 +4,7 @@ import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
@@ -58,6 +59,13 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
+
+  email: resendAdapter({
+    defaultFromAddress: 'admin@mail.grcmana.io',
+    defaultFromName: 'GRCMANA Admin',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
+
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
@@ -66,7 +74,7 @@ export default buildConfig({
   collections: [Pages, Posts, Media, Categories, Users],
 
   cors: [getServerSideURL()].filter(Boolean),
-  
+
   globals: [Header, Footer],
 
   plugins: [
@@ -75,7 +83,7 @@ export default buildConfig({
       collections: {
         media: {
           prefix: 'media',
-        }
+        },
       },
       bucket: process.env.S3_BUCKET!,
       config: {
@@ -94,7 +102,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  
+
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
