@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRCMANA — Close the Enterprise Trust Gap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   TOKENS
+   ============================================ */
+:root {
+  --ink-950: #07080a;
+  --ink-900: #0a0b0d;
+  --ink-800: #111215;
+  --ink-700: #1a1c20;
+  --ink-600: #252830;
+  --ink-500: #363a44;
+  --ink-400: #4d5260;
+  --ink-300: #6b7280;
+  --ink-200: #9ca3af;
+  --ink-100: #d1d5db;
+  --ink-50:  #f5f3ef;
+  --white:   #ffffff;
+
+  --signal-400: #f0ff5a;
+  --signal-500: #e8ff47;
+  --signal-600: #d4f53c;
+  --signal-700: #b8d930;
+  --signal-a12: rgba(232,255,71,0.12);
+  --signal-a06: rgba(232,255,71,0.06);
+  --signal-a03: rgba(232,255,71,0.03);
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger:  #ef4444;
+  --info:    #06b6d4;
+
+  --container-max:    1200px;
+  --container-narrow: 720px;
+  --container-wide:   1440px;
+  --gutter:           48px;
+  --section-y:        120px;
+  --section-y-hero:   160px;
+  --gap-tight:  8px;
+  --gap-base:  20px;
+  --gap-loose: 40px;
+
+  --border:       rgba(255,255,255,0.05);
+  --border-hover: rgba(255,255,255,0.10);
+  --border-signal: rgba(232,255,71,0.20);
+
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 40px rgba(232,255,71,0.12);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:  cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; cursor: none; }
+body {
+  background: var(--ink-900);
+  color: var(--white);
+  font-family: 'Syne', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; cursor: none; border: none; background: none; }
+
+/* ============================================
+   CURSOR
+   ============================================ */
+.c-dot {
+  position: fixed; pointer-events: none; z-index: 9999;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--signal-500);
+  transform: translate(-50%,-50%);
+  transition: width var(--dur-base) var(--ease-out),
+              height var(--dur-base) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+.c-ring {
+  position: fixed; pointer-events: none; z-index: 9998;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid rgba(232,255,71,0.45);
+  transform: translate(-50%,-50%);
+  transition: width var(--dur-base) var(--ease-out),
+              height var(--dur-base) var(--ease-out);
+}
+body.hover .c-dot { transform: translate(-50%,-50%) scale(2); }
+body.hover .c-ring { width: 48px; height: 48px; }
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+.container {
+  width: 100%; max-width: var(--container-max);
+  margin-inline: auto; padding-inline: var(--gutter);
+}
+.container--narrow { max-width: var(--container-narrow); }
+.container--wide   { max-width: var(--container-wide); }
+
+/* ============================================
+   SCROLL REVEAL
+   ============================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity var(--dur-slow) var(--ease-out),
+                transform var(--dur-slow) var(--ease-out);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal[data-d="1"] { transition-delay: 80ms; }
+  .reveal[data-d="2"] { transition-delay: 160ms; }
+  .reveal[data-d="3"] { transition-delay: 240ms; }
+}
+
+/* ============================================
+   TYPOGRAPHY HELPERS
+   ============================================ */
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-400); display: block;
+  margin-bottom: var(--gap-tight);
+}
+.eyebrow--signal { color: var(--signal-500); }
+
+/* ============================================
+   NAV
+   ============================================ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 60px;
+  background: rgba(10,11,13,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.nav__inner {
+  display: flex; align-items: center;
+  justify-content: space-between; width: 100%;
+}
+.nav__logo { display: flex; flex-direction: column; gap: 1px; }
+.nav__logo-mark {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--white);
+}
+.nav__logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-400);
+}
+.nav__links {
+  display: flex; align-items: center; gap: 28px;
+}
+.nav__link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-200);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.nav__link:hover { color: var(--white); }
+.nav__actions { display: flex; align-items: center; gap: 10px; }
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border-radius: 0; display: inline-flex;
+  align-items: center; gap: 6px; white-space: nowrap;
+  transition: all var(--dur-base) var(--ease-out);
+}
+.btn--sm  { font-size: 9px;  padding: 7px 14px; }
+.btn--md  { font-size: 10px; padding: 10px 20px; }
+.btn--lg  { font-size: 12px; padding: 16px 32px; }
+
+.btn--primary {
+  background: var(--signal-500); color: var(--ink-900);
+  padding: 10px 20px;
+}
+.btn--primary:hover {
+  background: var(--signal-400);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+.btn--ghost {
+  background: transparent; color: var(--ink-200);
+  border: 1px solid var(--border); padding: 10px 20px;
+}
+.btn--ghost:hover { color: var(--white); border-color: var(--border-hover); }
+.btn--ghost-signal {
+  background: transparent; color: var(--signal-500);
+  border: 1px solid var(--border-signal); padding: 10px 20px;
+}
+.btn--ghost-signal:hover {
+  background: var(--signal-a06);
+  border-color: rgba(232,255,71,0.4);
+}
+
+.cta-pair { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  position: relative; overflow: hidden;
+  padding-top: calc(var(--section-y-hero) + 60px);
+  padding-bottom: var(--section-y-hero);
+  padding-inline: var(--gutter);
+}
+.hero__glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 700px 500px at 50% 45%,
+      rgba(232,255,71,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 280px 280px at 75% 15%,
+      rgba(232,255,71,0.035) 0%, transparent 55%);
+}
+.hero__noise {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+.hero__inner {
+  position: relative; text-align: center;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+}
+.hero__h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(52px, 7.5vw, 88px);
+  line-height: 1.0; letter-spacing: -0.03em; font-weight: 400;
+  margin-bottom: var(--gap-base);
+}
+.hero__h1 em { font-style: italic; color: var(--signal-500); }
+.hero__body {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px; line-height: 1.65;
+  color: var(--ink-200); max-width: 500px;
+  margin: 0 auto var(--gap-loose);
+}
+.hero__ctas { justify-content: center; margin-bottom: 56px; }
+.hero__trust {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; flex-wrap: wrap;
+}
+.trust-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-400); padding: 5px 10px;
+  border: 1px solid var(--border);
+}
+
+/* ============================================
+   PROOF STRIP  (surface variation — Ink 800)
+   ============================================ */
+.proof-strip {
+  background: var(--ink-800);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding-block: 56px;
+}
+.proof-strip__label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-500); text-align: center; margin-bottom: 36px;
+}
+.proof-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+}
+.proof-item {
+  background: var(--ink-800); padding: 36px;
+  display: flex; flex-direction: column; gap: 14px;
+  transition: background var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+}
+.proof-item:hover { background: var(--ink-700); transform: translateY(-2px); }
+.proof-item__client {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300);
+}
+.proof-item__outcome {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-style: italic; font-size: 15px;
+  color: var(--ink-200); line-height: 1.55;
+}
+
+/* ============================================
+   SECTION HEADER
+   ============================================ */
+.s-header { margin-bottom: 56px; }
+.s-header__h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1.05; letter-spacing: -0.02em; font-weight: 400;
+  margin-bottom: var(--gap-base);
+}
+.s-header__h2 em { font-style: italic; color: var(--signal-500); }
+.s-header__body {
+  font-size: 15px; color: var(--ink-200);
+  max-width: 460px; line-height: 1.65;
+}
+
+/* ============================================
+   SERVICES
+   ============================================ */
+.services { padding-block: var(--section-y); }
+.services-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+}
+.svc-card {
+  background: var(--ink-800); padding: 40px;
+  display: flex; flex-direction: column;
+  border-top: 2px solid transparent;
+  transition: all var(--dur-base) var(--ease-out);
+}
+.svc-card:hover {
+  background: var(--ink-700);
+  border-top-color: var(--signal-500);
+  transform: translateY(-2px);
+}
+.svc-card__num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-500); margin-bottom: 24px;
+}
+.svc-card__icon {
+  font-size: 20px; color: var(--ink-400); margin-bottom: 20px; line-height: 1;
+}
+.svc-card__title {
+  font-family: 'Syne', sans-serif;
+  font-size: 19px; font-weight: 700; color: var(--white); margin-bottom: 12px;
+}
+.svc-card__body {
+  font-size: 14px; color: var(--ink-300); line-height: 1.65;
+  flex: 1; margin-bottom: 32px;
+}
+.svc-card__link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--signal-500);
+  border: 1px solid var(--border-signal); padding: 8px 14px;
+  display: inline-flex; align-items: center; gap: 5px; align-self: flex-start;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.svc-card:hover .svc-card__link { background: var(--signal-a06); border-color: rgba(232,255,71,0.4); }
+
+/* ============================================
+   FRAMEWORK  (Ink 950 band)
+   ============================================ */
+.framework {
+  background: var(--ink-950); padding-block: var(--section-y);
+  border-top: 1px solid var(--border);
+}
+.phase-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 1px; background: var(--border); margin-top: 52px;
+}
+.phase-card {
+  background: var(--ink-950); padding: 28px 22px;
+  transition: background var(--dur-base) var(--ease-out);
+}
+.phase-card:hover { background: var(--ink-800); }
+.phase-card__n {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-500); margin-bottom: 18px;
+}
+.phase-card__label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-100); margin-bottom: 10px;
+}
+.phase-card--active .phase-card__label { color: var(--signal-500); }
+.phase-card__desc {
+  font-size: 12px; color: var(--ink-400); line-height: 1.55;
+}
+/* connector arrow between phases */
+.phase-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-600); font-size: 10px; padding-top: 28px;
+}
+
+/* ============================================
+   METRICS BAND  (Dark Zone 2)
+   ============================================ */
+.metrics-band {
+  background: var(--ink-950); padding-block: var(--section-y-hero);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+}
+.metric {
+  background: var(--ink-950); padding: 52px 48px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.metric__value {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 72px; line-height: 1.0;
+  letter-spacing: -0.02em; color: var(--signal-500);
+}
+.metric__qualifier {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-400); margin-top: 4px;
+}
+.metric__desc {
+  font-size: 14px; color: var(--ink-400); line-height: 1.55; margin-top: 8px;
+  max-width: 260px;
+}
+
+/* ============================================
+   TESTIMONIAL
+   ============================================ */
+.testimonial-section { padding-block: var(--section-y); }
+.testimonial { max-width: 760px; margin-inline: auto; }
+.testimonial__mark {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 88px; line-height: 0.75;
+  color: var(--signal-500); display: block; margin-bottom: 20px;
+}
+.testimonial__quote {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(22px, 3vw, 30px); line-height: 1.4;
+  font-weight: 400; color: var(--white); margin-bottom: 32px;
+}
+.testimonial__quote strong {
+  font-weight: 400; color: var(--signal-500);
+}
+.testimonial__attr {
+  display: flex; align-items: center; gap: 14px;
+}
+.testimonial__rule { width: 28px; height: 1px; background: var(--ink-500); flex-shrink: 0; }
+.testimonial__name {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700; color: var(--white);
+}
+.testimonial__role {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; color: var(--ink-300);
+}
+
+/* ============================================
+   PRODUCT PREVIEW
+   ============================================ */
+.preview-section {
+  padding-block: var(--section-y);
+  background: var(--ink-800);
+  border-top: 1px solid var(--border);
+}
+.product-preview {
+  background: var(--ink-900);
+  border: 1px solid var(--border);
+  overflow: hidden; margin-top: 52px;
+}
+.chrome-bar {
+  background: var(--ink-950); height: 36px;
+  display: flex; align-items: center;
+  padding: 0 14px; gap: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.chrome-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink-600); }
+.chrome-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--ink-400); letter-spacing: 0.08em;
+  margin-left: 10px;
+}
+.live-tag {
+  margin-left: auto; display: flex; align-items: center; gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--success); border: 1px solid rgba(34,197,94,0.25); padding: 3px 8px;
+}
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--success);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.preview-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border);
+}
+.preview-panel {
+  background: var(--ink-900); padding: 28px;
+}
+.preview-panel__label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-500); margin-bottom: 6px;
+}
+.preview-panel__title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 20px;
+}
+.risk-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.risk-row:last-child { border-bottom: none; }
+.risk-label { font-size: 13px; color: var(--ink-200); flex: 1; }
+.bar-track { width: 80px; height: 3px; background: var(--ink-700); flex-shrink: 0; }
+.bar-fill { height: 100%; }
+.bar--ok     { background: var(--success); }
+.bar--warn   { background: var(--warning); }
+.bar--danger { background: var(--danger);  }
+.bar--signal { background: var(--signal-500); }
+.risk-score {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500; color: var(--ink-200);
+  min-width: 30px; text-align: right;
+}
+.fw-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.fw-row:last-child { border-bottom: none; }
+.fw-name { font-size: 13px; color: var(--ink-200); }
+.fw-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 8px; border: 1px solid var(--border);
+  color: var(--ink-400);
+}
+.fw-tag--ok   { border-color: rgba(34,197,94,0.3);  color: var(--success); background: rgba(34,197,94,0.06); }
+.fw-tag--warn { border-color: rgba(245,158,11,0.3); color: var(--warning); background: rgba(245,158,11,0.06); }
+.fw-tag--info { border-color: rgba(6,182,212,0.3);  color: var(--info);    background: rgba(6,182,212,0.06); }
+.tml-block { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+.tml-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-500); margin-bottom: 6px;
+}
+.tml-value {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 28px; color: var(--signal-500);
+}
+.tml-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--ink-400); margin-top: 3px;
+}
+
+/* ============================================
+   COMMUNITY  STRIP
+   ============================================ */
+.community-strip {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding-block: 40px;
+}
+.community-strip__inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 32px;
+}
+.community-copy { max-width: 500px; }
+.community-copy__overline {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-500); margin-bottom: 8px;
+}
+.community-copy__headline {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--white); line-height: 1.3;
+}
+.community-copy__headline span { color: var(--signal-500); }
+.community-stat {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 52px; color: var(--signal-500); text-align: right; flex-shrink: 0;
+}
+.community-stat__label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-400); text-align: right;
+}
+
+/* ============================================
+   CTA CLOSE  (Dark Zone 3)
+   ============================================ */
+.cta-close {
+  padding-block: var(--section-y-hero);
+  background: var(--ink-950);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.cta-close__h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(40px, 5.5vw, 68px);
+  line-height: 1.0; letter-spacing: -0.025em; font-weight: 400;
+  margin-bottom: var(--gap-base);
+}
+.cta-close__h2 em { font-style: italic; color: var(--signal-500); }
+.cta-close__body {
+  font-size: 16px; color: var(--ink-200);
+  max-width: 440px; margin: 0 auto var(--gap-loose);
+  line-height: 1.65;
+}
+.cta-close__pair { justify-content: center; }
+.cta-close__note {
+  margin-top: 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  background: var(--ink-950);
+  border-top: 1px solid var(--border);
+  padding-block: 64px 28px;
+}
+.footer__top {
+  display: grid;
+  grid-template-columns: 240px 1fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 56px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+.footer__brand-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--white); margin-bottom: 3px;
+}
+.footer__brand-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-500); margin-bottom: 14px;
+}
+.footer__tagline {
+  font-size: 13px; color: var(--ink-300); line-height: 1.6; margin-bottom: 20px;
+}
+.footer__certs { display: flex; flex-wrap: wrap; gap: 5px; }
+.cert {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-500); padding: 4px 8px;
+  border: 1px solid var(--border);
+}
+.footer__col-head {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-500); margin-bottom: 16px;
+}
+.footer__links { display: flex; flex-direction: column; gap: 9px; }
+.footer__link {
+  font-size: 13px; color: var(--ink-300);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.footer__link:hover { color: var(--white); }
+.footer__bottom {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer__copy, .footer__reg {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.08em; color: var(--ink-500);
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+
+<!-- ============================================
+     NAV
+     ============================================ -->
+<nav class="nav">
+  <div class="container nav__inner">
+    <a href="#" class="nav__logo">
+      <span class="nav__logo-mark">GRCMANA</span>
+      <span class="nav__logo-sub">Trust Architect</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="#" class="nav__link">Solutions</a></li>
+      <li><a href="#" class="nav__link">Services</a></li>
+      <li><a href="#" class="nav__link">Framework</a></li>
+      <li><a href="#" class="nav__link">Resources</a></li>
+      <li><a href="#" class="nav__link">About</a></li>
+    </ul>
+    <div class="nav__actions">
+      <a href="#" class="btn btn--ghost btn--sm">Ask the Trust Architect</a>
+      <a href="#" class="btn btn--primary btn--sm">Book a Call →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section class="hero">
+  <div class="hero__glow"></div>
+  <div class="hero__noise"></div>
+  <div class="hero__inner">
+    <span class="reveal eyebrow">Trust Architect · GRCMANA</span>
+    <h1 class="reveal hero__h1">
+      Close the Enterprise<br><em>Trust Gap.</em>
+    </h1>
+    <p class="reveal hero__body">
+      We help high-growth B2B tech startups turn security, governance, and resilience from a deal blocker into the reason enterprise contracts get signed.
+    </p>
+    <div class="reveal hero__ctas cta-pair">
+      <a href="#" class="btn btn--primary btn--lg">Book a Discovery Call →</a>
+      <a href="#" class="btn btn--ghost btn--lg">See the Framework</a>
+    </div>
+    <div class="reveal hero__trust">
+      <span class="trust-badge">ISO 27001</span>
+      <span class="trust-badge">ISO 42001</span>
+      <span class="trust-badge">ISO 9001</span>
+      <span class="trust-badge">Cyber Essentials</span>
+      <span class="trust-badge">EU AI Act Ready</span>
+      <span class="trust-badge">NIST AI RMF</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PROOF STRIP
+     ============================================ -->
+<div class="proof-strip">
+  <div class="container">
+    <p class="proof-strip__label">Founders closing enterprise deals</p>
+    <div class="proof-grid reveal">
+      <div class="proof-item">
+        <span class="proof-item__client">Fintech Co.</span>
+        <p class="proof-item__outcome">Closed a £400k ARR enterprise deal within six weeks of ISO 27001 certification.</p>
+      </div>
+      <div class="proof-item">
+        <span class="proof-item__client">RegTech Ltd.</span>
+        <p class="proof-item__outcome">Moved from shortlisted to preferred vendor after a single AI governance assessment.</p>
+      </div>
+      <div class="proof-item">
+        <span class="proof-item__client">DataCo AI</span>
+        <p class="proof-item__outcome">Passed a Tier 1 bank security review on first submission — zero remediation required.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     SERVICES
+     ============================================ -->
+<section class="services">
+  <div class="container">
+    <div class="s-header reveal">
+      <span class="eyebrow">Services</span>
+      <h2 class="s-header__h2">GRC built for founders<br>who need to <em>move.</em></h2>
+      <p class="s-header__body">Fixed-fee, founder-facing. No bloated retainers, no complexity theatre. Certification when you need it, governance that holds up to enterprise scrutiny.</p>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card reveal" data-d="0">
+        <span class="svc-card__num">01 — Compliance</span>
+        <div class="svc-card__icon">⬡</div>
+        <h3 class="svc-card__title">ISO Certification</h3>
+        <p class="svc-card__body">27001, 42001, and 9001 — full certification in as few as six weeks. We build the system, run the audit, and hand you a certificate your enterprise buyers will accept without question.</p>
+        <a href="#" class="svc-card__link">Explore →</a>
+      </div>
+      <div class="svc-card reveal" data-d="1">
+        <span class="svc-card__num">02 — Governance</span>
+        <div class="svc-card__icon">◈</div>
+        <h3 class="svc-card__title">AI Governance</h3>
+        <p class="svc-card__body">ISO 42001, EU AI Act readiness, NIST AI RMF mapping, and Shadow AI management — structured for the pace of a startup, credible enough for a regulated enterprise buyer.</p>
+        <a href="#" class="svc-card__link">Explore →</a>
+      </div>
+      <div class="svc-card reveal" data-d="2">
+        <span class="svc-card__num">03 — Resilience</span>
+        <div class="svc-card__icon">◎</div>
+        <h3 class="svc-card__title">CISO-as-a-Service</h3>
+        <p class="svc-card__body">A Global CISO on your team without the hire. Board-level reporting, enterprise security reviews, vendor assessments, and incident response — at a fraction of the in-house cost.</p>
+        <a href="#" class="svc-card__link">Explore →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     TRUST ARCHITECTURE FRAMEWORK  (Ink 950)
+     ============================================ -->
+<section class="framework">
+  <div class="container">
+    <div class="s-header reveal">
+      <span class="eyebrow">The Trust Architecture Framework</span>
+      <h2 class="s-header__h2">Six phases from<br><em>exposed</em> to trusted.</h2>
+      <p class="s-header__body">A structured path through every stage of security and governance maturity — built for startups that need to move fast and hold up to enterprise scrutiny.</p>
+    </div>
+    <div class="phase-grid">
+      <div class="phase-card phase-card--active reveal" data-d="0">
+        <div class="phase-card__n">Phase 01</div>
+        <div class="phase-card__label">Define</div>
+        <p class="phase-card__desc">Map your risk landscape and set the baseline. Know where you are before you move.</p>
+      </div>
+      <div class="phase-card reveal" data-d="1">
+        <div class="phase-card__n">Phase 02</div>
+        <div class="phase-card__label">Build</div>
+        <p class="phase-card__desc">Architect the controls, policies, and evidence framework that certification demands.</p>
+      </div>
+      <div class="phase-card reveal" data-d="2">
+        <div class="phase-card__n">Phase 03</div>
+        <div class="phase-card__label">Embed</div>
+        <p class="phase-card__desc">Make governance a team behaviour, not a compliance exercise. Culture over checkbox.</p>
+      </div>
+      <div class="phase-card reveal" data-d="3">
+        <div class="phase-card__n">Phase 04</div>
+        <div class="phase-card__label">Validate</div>
+        <p class="phase-card__desc">Audit-ready evidence, third-party validation, and certification submission.</p>
+      </div>
+      <div class="phase-card reveal" data-d="1">
+        <div class="phase-card__n">Phase 05</div>
+        <div class="phase-card__label">Scale</div>
+        <p class="phase-card__desc">Expand coverage as you grow — new frameworks, new markets, new buyer requirements.</p>
+      </div>
+      <div class="phase-card reveal" data-d="2">
+        <div class="phase-card__n">Phase 06</div>
+        <div class="phase-card__label">Evolve</div>
+        <p class="phase-card__desc">Continuous improvement and horizon scanning so trust stays ahead of the threat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     METRICS BAND  (Dark Zone 2 — Ink 950)
+     ============================================ -->
+<section class="metrics-band">
+  <div class="container">
+    <div class="metrics-grid">
+      <div class="metric reveal" data-d="0">
+        <div class="metric__value">73%</div>
+        <div class="metric__qualifier">of enterprise buyers</div>
+        <p class="metric__desc">require vendor security certification before commercial contracts proceed to legal review.</p>
+      </div>
+      <div class="metric reveal" data-d="1">
+        <div class="metric__value">6wk</div>
+        <div class="metric__qualifier">Median certification time</div>
+        <p class="metric__desc">From engagement to ISO 27001 certificate in hand — faster than any comparable consultancy.</p>
+      </div>
+      <div class="metric reveal" data-d="2">
+        <div class="metric__value">£2.8M</div>
+        <div class="metric__qualifier">Avg deal value unlocked</div>
+        <p class="metric__desc">Enterprise contract value enabled directly by Trust Architecture engagements across our client base.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     TESTIMONIAL
+     ============================================ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="testimonial reveal">
+      <span class="testimonial__mark" aria-hidden="true">"</span>
+      <blockquote class="testimonial__quote">
+        We'd been stuck on the enterprise shortlist for three months. GRCMANA got us through ISO 27001 in six weeks and we <strong>closed the deal the month after.</strong> It wasn't paperwork — it was a commercial unlock.
+      </blockquote>
+      <div class="testimonial__attr">
+        <div class="testimonial__rule"></div>
+        <div>
+          <div class="testimonial__name">James Whitfield</div>
+          <div class="testimonial__role">Founder & CEO, RegTech Ltd.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PRODUCT PREVIEW  (Trust Maturity Model)
+     ============================================ -->
+<section class="preview-section">
+  <div class="container">
+    <div class="s-header reveal">
+      <span class="eyebrow">Trust Maturity Model</span>
+      <h2 class="s-header__h2">See exactly<br>where you stand.</h2>
+      <p class="s-header__body">The Trust Maturity Assessment gives you a scored baseline across every domain so you know what to fix, in what order, before an enterprise buyer asks.</p>
+    </div>
+  </div>
+  <div class="container container--wide">
+    <div class="product-preview reveal">
+      <div class="chrome-bar">
+        <div class="chrome-dot"></div>
+        <div class="chrome-dot"></div>
+        <div class="chrome-dot"></div>
+        <span class="chrome-title">Trust Maturity Assessment — GRCMANA Platform v2.4</span>
+        <div class="live-tag"><div class="live-dot"></div> Live</div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-panel">
+          <div class="preview-panel__label">Domain Coverage</div>
+          <div class="preview-panel__title">Risk Assessment Score</div>
+          <div class="risk-row">
+            <span class="risk-label">Identity & Access Management</span>
+            <div class="bar-track"><div class="bar-fill bar--ok" style="width:85%"></div></div>
+            <span class="risk-score">85</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-label">Data Classification & Handling</span>
+            <div class="bar-track"><div class="bar-fill bar--warn" style="width:62%"></div></div>
+            <span class="risk-score">62</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-label">Incident Response & Recovery</span>
+            <div class="bar-track"><div class="bar-fill bar--danger" style="width:34%"></div></div>
+            <span class="risk-score">34</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-label">Third-Party & Supply Chain Risk</span>
+            <div class="bar-track"><div class="bar-fill bar--warn" style="width:58%"></div></div>
+            <span class="risk-score">58</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-label">AI Model Governance</span>
+            <div class="bar-track"><div class="bar-fill bar--signal" style="width:91%"></div></div>
+            <span class="risk-score">91</span>
+          </div>
+          <div class="risk-row">
+            <span class="risk-label">Business Continuity Planning</span>
+            <div class="bar-track"><div class="bar-fill bar--ok" style="width:77%"></div></div>
+            <span class="risk-score">77</span>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-panel__label">Certification Status</div>
+          <div class="preview-panel__title">Framework Readiness</div>
+          <div class="fw-row">
+            <span class="fw-name">ISO 27001 — Information Security</span>
+            <span class="fw-tag fw-tag--ok">Certified</span>
+          </div>
+          <div class="fw-row">
+            <span class="fw-name">ISO 42001 — AI Management</span>
+            <span class="fw-tag fw-tag--warn">In Progress</span>
+          </div>
+          <div class="fw-row">
+            <span class="fw-name">ISO 9001 — Quality Management</span>
+            <span class="fw-tag fw-tag--ok">Certified</span>
+          </div>
+          <div class="fw-row">
+            <span class="fw-name">Cyber Essentials Plus</span>
+            <span class="fw-tag fw-tag--ok">Certified</span>
+          </div>
+          <div class="fw-row">
+            <span class="fw-name">EU AI Act — High Risk Assessment</span>
+            <span class="fw-tag fw-tag--info">Gap Analysis</span>
+          </div>
+          <div class="fw-row">
+            <span class="fw-name">NIST AI Risk Management Framework</span>
+            <span class="fw-tag">Not Started</span>
+          </div>
+          <div class="tml-block">
+            <div class="tml-label">Current Trust Maturity Level</div>
+            <div class="tml-value">Controlled</div>
+            <div class="tml-sub">Level 3 of 5 — pathway to: Credible</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     COMMUNITY STRIP
+     ============================================ -->
+<div class="community-strip">
+  <div class="container">
+    <div class="community-strip__inner reveal">
+      <div class="community-copy">
+        <div class="community-copy__overline">The Trust Collective</div>
+        <div class="community-copy__headline">
+          Join a community of founders building <span>enterprise-grade trust</span> from day one.
+        </div>
+        <div style="margin-top: 20px;">
+          <a href="#" class="btn btn--ghost-signal btn--md">Join the Collective →</a>
+        </div>
+      </div>
+      <div>
+        <div class="community-stat">16k+</div>
+        <div class="community-stat__label">Members · Cyber Resilience Network</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     CTA CLOSE  (Dark Zone 3 — Ink 950)
+     ============================================ -->
+<section class="cta-close">
+  <div class="container container--narrow">
+    <span class="reveal eyebrow">Ready when you are</span>
+    <h2 class="reveal cta-close__h2">
+      Stop losing deals to<br><em>trust deficits.</em>
+    </h2>
+    <p class="reveal cta-close__body">
+      Book a free 30-minute Discovery Call. We'll identify your biggest trust gap and map a clear path to your first certification.
+    </p>
+    <div class="reveal cta-pair cta-close__pair">
+      <a href="#" class="btn btn--primary btn--lg">Book a Discovery Call →</a>
+      <a href="#" class="btn btn--ghost btn--lg">Download the GRC Playbook</a>
+    </div>
+    <p class="cta-close__note reveal">No commitment · Response within 24 hours · Fixed-fee only</p>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <div class="footer__brand-name">GRCMANA</div>
+        <div class="footer__brand-sub">Part of The Mana Consortium</div>
+        <p class="footer__tagline">Helping high-growth B2B tech startups close the Enterprise Trust Gap through security, governance, and AI resilience.</p>
+        <div class="footer__certs">
+          <span class="cert">ISO 27001</span>
+          <span class="cert">ISO 42001</span>
+          <span class="cert">ISO 9001</span>
+          <span class="cert">Cyber Essentials</span>
+          <span class="cert">EU AI Act Ready</span>
+          <span class="cert">NIST AI RMF</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-head">Solutions</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">ISO Certification</a></li>
+          <li><a href="#" class="footer__link">AI Governance</a></li>
+          <li><a href="#" class="footer__link">CISO-as-a-Service</a></li>
+          <li><a href="#" class="footer__link">GRC Retainer</a></li>
+          <li><a href="#" class="footer__link">Trust Centre</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-head">Framework</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Trust Architecture</a></li>
+          <li><a href="#" class="footer__link">Trust Maturity Model</a></li>
+          <li><a href="#" class="footer__link">Enterprise Trust Gap</a></li>
+          <li><a href="#" class="footer__link">AI Risk Register</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-head">Resources</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">GRC Playbook</a></li>
+          <li><a href="#" class="footer__link">The Trust Collective</a></li>
+          <li><a href="#" class="footer__link">Blog</a></li>
+          <li><a href="#" class="footer__link">Case Studies</a></li>
+          <li><a href="#" class="footer__link">Cyber Resilience Network</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-head">Company</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">About GRCMANA</a></li>
+          <li><a href="#" class="footer__link">Harry — Trust Architect</a></li>
+          <li><a href="#" class="footer__link">Contact</a></li>
+          <li><a href="#" class="footer__link">The Mana Consortium</a></li>
+          <li><a href="#" class="footer__link">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span class="footer__copy">© 2025 GRCMANA · Part of The Mana Consortium · All rights reserved</span>
+      <span class="footer__reg">Registered in England & Wales</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================
+   CURSOR
+   ============================================ */
+const dot  = document.getElementById('cdot');
+const ring = document.getElementById('cring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+});
+
+(function tick() {
+  rx += (mx - rx) * 0.11; ry += (my - ry) * 0.11;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(tick);
+})();
+
+document.querySelectorAll('a, button, .svc-card, .proof-item, .phase-card, .metric').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hover'));
+});
+
+/* ============================================
+   SCROLL REVEAL
+   ============================================ */
+const io = new IntersectionObserver(
+  entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }),
+  { threshold: 0.08 }
+);
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
