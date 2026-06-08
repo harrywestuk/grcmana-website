@@ -330,7 +330,7 @@
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink-400);
+  color: var(--ink-300);
   display: block;
   margin-bottom: var(--gap-tight);
 }

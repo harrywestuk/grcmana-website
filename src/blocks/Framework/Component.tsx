@@ -95,7 +95,7 @@ export const FrameworkBlock: React.FC<FrameworkBlockProps> = ({
                       fontSize: '8px',
                       letterSpacing: '0.12em',
                       textTransform: 'uppercase',
-                      color: phase.isActive ? 'var(--signal-500)' : 'var(--ink-500)',
+                      color: phase.isActive ? 'var(--signal-500)' : 'var(--ink-200)',
                       marginBottom: '8px',
                     }}
                   >

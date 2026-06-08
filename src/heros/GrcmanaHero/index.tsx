@@ -190,9 +190,10 @@ export const GrcmanaHero: React.FC<GrcmanaHeroProps> = ({
                   fontWeight: 400,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
-                  color: 'var(--ink-400)',
+                  color: 'var(--ink-200)',
+                  background: 'var(--ink-800)',
                   padding: '5px 10px',
-                  border: '1px solid var(--ds-border)',
+                  border: '1px solid var(--ds-border-hover)',
                 }}
               >
                 {badge.label}

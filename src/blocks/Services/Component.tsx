@@ -138,7 +138,7 @@ export const ServicesBlock: React.FC<ServicesBlockProps> = ({
                           fontSize: '8px',
                           letterSpacing: '0.1em',
                           textTransform: 'uppercase',
-                          color: 'var(--ink-500)',
+                          color: 'var(--ink-200)',
                           marginBottom: '6px',
                         }}
                       >
