@@ -15,6 +15,35 @@ export function resolveMenuHref(item: MenuItem): string {
   return item.url ?? '#'
 }
 
+export type ColumnGroup = {
+  colKey: number
+  meta: NonNullable<MenuItemNode['columnMeta']>[number] | undefined
+  children: MenuItemNode[]
+}
+
+export function groupByColumn(item: MenuItemNode): ColumnGroup[] {
+  const columns: Record<number, MenuItemNode[]> = {}
+  for (const child of item.children) {
+    const col = child.column ?? 1
+    if (!columns[col]) columns[col] = []
+    columns[col].push(child)
+  }
+
+  const metaByColumn: Record<number, NonNullable<MenuItemNode['columnMeta']>[number]> = {}
+  for (const m of item.columnMeta ?? []) {
+    if (m.columnNumber != null) metaByColumn[m.columnNumber] = m
+  }
+
+  return Object.keys(columns)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((colKey) => ({
+      colKey,
+      meta: metaByColumn[colKey],
+      children: columns[colKey],
+    }))
+}
+
 export function buildMenuTree(flat: MenuItem[]): MenuItemNode[] {
   const byId = new Map<number, MenuItemNode>()
 

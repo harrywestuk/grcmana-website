@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { Header as HeaderType } from '@/payload-types'
 import type { MenuItemNode } from '@/utilities/buildMenuTree'
-import { resolveMenuHref } from '@/utilities/buildMenuTree'
+import { groupByColumn, resolveMenuHref } from '@/utilities/buildMenuTree'
 
 interface HeaderClientProps {
   data: HeaderType
@@ -44,6 +44,42 @@ function resolvePanelCtaHref(cta: NonNullable<MenuItemNode['cta']>): string {
   return cta.url ?? '#'
 }
 
+// ─── Shared column heading ────────────────────────────────────────────────────
+
+import type { ColumnGroup } from '@/utilities/buildMenuTree'
+
+const ColumnHeading: React.FC<{ meta: NonNullable<ColumnGroup['meta']> }> = ({ meta }) => (
+  <div style={{ marginBottom: '8px', paddingBottom: '10px', borderBottom: '1px solid var(--ds-border)' }}>
+    <span
+      style={{
+        display: 'block',
+        fontFamily: 'var(--font-dm-mono), monospace',
+        fontSize: '10px',
+        fontWeight: 500,
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        color: 'var(--ink-200)',
+      }}
+    >
+      {meta.heading}
+    </span>
+    {meta.subText && (
+      <span
+        style={{
+          display: 'block',
+          fontFamily: 'var(--font-dm-serif), Georgia, serif',
+          fontStyle: 'italic',
+          fontSize: '11px',
+          color: 'var(--ink-300)',
+          marginTop: '2px',
+        }}
+      >
+        {meta.subText}
+      </span>
+    )}
+  </div>
+)
+
 // ─── Desktop mega panel ───────────────────────────────────────────────────────
 
 type PanelProps = {
@@ -52,23 +88,7 @@ type PanelProps = {
 }
 
 const MegaPanel: React.FC<PanelProps> = ({ item, onClose }) => {
-  const columns = item.children.reduce<Record<number, MenuItemNode[]>>((acc, child) => {
-    const col = child.column ?? 1
-    if (!acc[col]) acc[col] = []
-    acc[col].push(child)
-    return acc
-  }, {})
-
-  const colKeys = Object.keys(columns)
-    .map(Number)
-    .sort((a, b) => a - b)
-
-  const metaByColumn = (item.columnMeta ?? []).reduce<
-    Record<number, NonNullable<MenuItemNode['columnMeta']>[number]>
-  >((acc, m) => {
-    if (m.columnNumber != null) acc[m.columnNumber] = m
-    return acc
-  }, {})
+  const groups = groupByColumn(item)
 
   const panelCta = item.cta?.label ? item.cta : null
   const ctaHref = panelCta ? resolvePanelCtaHref(panelCta) : '#'
@@ -91,47 +111,15 @@ const MegaPanel: React.FC<PanelProps> = ({ item, onClose }) => {
         className="container"
         style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${Math.max(colKeys.length, 1)}, 1fr)`,
+          gridTemplateColumns: `repeat(${Math.max(groups.length, 1)}, 1fr)`,
           gap: '40px',
           padding: '32px var(--container-px, 24px)',
         }}
       >
-        {colKeys.map((colKey) => {
-          const meta = metaByColumn[colKey]
-          return (
+        {groups.map(({ colKey, meta, children: colChildren }) => (
           <div key={colKey} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {meta && (
-              <div style={{ marginBottom: '8px', paddingBottom: '10px', borderBottom: '1px solid var(--ds-border)' }}>
-                <span
-                  style={{
-                    display: 'block',
-                    fontFamily: 'var(--font-dm-mono), monospace',
-                    fontSize: '10px',
-                    fontWeight: 500,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    color: 'var(--ink-200)',
-                  }}
-                >
-                  {meta.heading}
-                </span>
-                {meta.subText && (
-                  <span
-                    style={{
-                      display: 'block',
-                      fontFamily: 'var(--font-dm-serif), Georgia, serif',
-                      fontStyle: 'italic',
-                      fontSize: '11px',
-                      color: 'var(--ink-300)',
-                      marginTop: '2px',
-                    }}
-                  >
-                    {meta.subText}
-                  </span>
-                )}
-              </div>
-            )}
-            {columns[colKey].map((child) => {
+            {meta && <ColumnHeading meta={meta} />}
+            {colChildren.map((child) => {
               const href = resolveMenuHref(child)
               return (
                 <Link
@@ -173,8 +161,7 @@ const MegaPanel: React.FC<PanelProps> = ({ item, onClose }) => {
               )
             })}
           </div>
-          )
-        })}
+        ))}
       </div>
 
       {/* CTA bar */}
@@ -618,56 +605,61 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, menuTree }) =>
                       </div>
 
                       {hasChildren && isExpanded && (
-                        <ul
-                          style={{
-                            listStyle: 'none',
-                            paddingLeft: '16px',
-                            paddingBottom: '8px',
-                          }}
-                        >
-                          {item.children.map((child) => {
-                            const childHref = resolveMenuHref(child)
-                            return (
-                              <li key={child.id}>
-                                <Link
-                                  href={childHref}
-                                  style={{
-                                    display: 'block',
-                                    padding: '10px 0',
-                                    fontFamily: 'var(--font-dm-mono), monospace',
-                                    fontSize: '10px',
-                                    fontWeight: 400,
-                                    letterSpacing: '0.08em',
-                                    textTransform: 'uppercase',
-                                    color: 'var(--ink-200)',
-                                    textDecoration: 'none',
-                                  }}
-                                  {...(child.newTab
-                                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                                    : {})}
-                                >
-                                  {child.label}
-                                  {child.description && (
-                                    <span
-                                      style={{
-                                        display: 'block',
-                                        fontFamily: 'var(--font-dm-serif), Georgia, serif',
-                                        fontStyle: 'italic',
-                                        fontSize: '11px',
-                                        textTransform: 'none',
-                                        letterSpacing: 0,
-                                        color: 'var(--ink-300)',
-                                        marginTop: '2px',
-                                      }}
-                                    >
-                                      {child.description}
-                                    </span>
-                                  )}
-                                </Link>
-                              </li>
-                            )
-                          })}
-                        </ul>
+                        <div style={{ paddingBottom: '12px' }}>
+                          {groupByColumn(item).map(({ colKey, meta, children: colChildren }) => (
+                            <div key={colKey} style={{ marginBottom: '16px' }}>
+                              {meta && (
+                                <div style={{ paddingLeft: '16px' }}>
+                                  <ColumnHeading meta={meta} />
+                                </div>
+                              )}
+                              <ul style={{ listStyle: 'none', paddingLeft: '16px' }}>
+                                {colChildren.map((child) => {
+                                  const childHref = resolveMenuHref(child)
+                                  return (
+                                    <li key={child.id}>
+                                      <Link
+                                        href={childHref}
+                                        style={{
+                                          display: 'block',
+                                          padding: '10px 0',
+                                          fontFamily: 'var(--font-dm-mono), monospace',
+                                          fontSize: '10px',
+                                          fontWeight: 400,
+                                          letterSpacing: '0.08em',
+                                          textTransform: 'uppercase',
+                                          color: 'var(--ink-200)',
+                                          textDecoration: 'none',
+                                        }}
+                                        {...(child.newTab
+                                          ? { target: '_blank', rel: 'noopener noreferrer' }
+                                          : {})}
+                                      >
+                                        {child.label}
+                                        {child.description && (
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                                              fontStyle: 'italic',
+                                              fontSize: '11px',
+                                              textTransform: 'none',
+                                              letterSpacing: 0,
+                                              color: 'var(--ink-300)',
+                                              marginTop: '2px',
+                                            }}
+                                          >
+                                            {child.description}
+                                          </span>
+                                        )}
+                                      </Link>
+                                    </li>
+                                  )
+                                })}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </li>
                   )
