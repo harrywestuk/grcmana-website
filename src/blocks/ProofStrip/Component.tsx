@@ -22,7 +22,7 @@ export const ProofStripBlock: React.FC<ProofStripBlockProps> = ({ label, items }
               fontSize: '9px',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
-              color: 'var(--ink-500)',
+              color: 'var(--ink-300)',
               marginBottom: '20px',
             }}
           >
