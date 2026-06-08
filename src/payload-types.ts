@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    'menu-items': MenuItem;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +95,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'menu-items': MenuItemsSelect<false> | MenuItemsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1081,6 +1083,94 @@ export interface CtaCloseBlock {
   blockType: 'ctaClose';
 }
 /**
+ * Navigation items for the site mega menu. Create items here, then assign top-level items to the Header global.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-items".
+ */
+export interface MenuItem {
+  id: number;
+  label: string;
+  /**
+   * Short descriptor shown beneath the label in the mega menu panel (optional).
+   */
+  description?: string | null;
+  linkType?: ('internal' | 'custom') | null;
+  newTab?: boolean | null;
+  reference?:
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null);
+  /**
+   * Absolute URL (https://…) or relative path (/solutions).
+   */
+  url?: string | null;
+  /**
+   * Hovering this root-level item opens a full-width dropdown panel instead of navigating directly. Only applies to items with no parent.
+   */
+  megaPanel?: boolean | null;
+  /**
+   * Add a heading (and optional sub-text) for each column in the mega panel. Match the Column number to the one set on child items.
+   */
+  columnMeta?:
+    | {
+        /**
+         * Matches the Column field on child items.
+         */
+        columnNumber: number;
+        heading: string;
+        /**
+         * Short descriptor shown beneath the column heading.
+         */
+        subText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Full-width strip shown at the bottom of the mega panel — e.g. "View All Solutions →".
+   */
+  cta?: {
+    /**
+     * Button text, e.g. "View All Solutions →"
+     */
+    label?: string | null;
+    linkType?: ('internal' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    /**
+     * Absolute URL (https://…) or relative path (/solutions).
+     */
+    url?: string | null;
+  };
+  /**
+   * Leave blank for top-level items.
+   */
+  parent?: (number | null) | MenuItem;
+  /**
+   * Sort position among siblings (lower = first).
+   */
+  order?: number | null;
+  /**
+   * Which column within the mega panel this item appears in.
+   */
+  column?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -1289,6 +1379,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'menu-items';
+        value: number | MenuItem;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1837,6 +1931,41 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-items_select".
+ */
+export interface MenuItemsSelect<T extends boolean = true> {
+  label?: T;
+  description?: T;
+  linkType?: T;
+  newTab?: T;
+  reference?: T;
+  url?: T;
+  megaPanel?: T;
+  columnMeta?:
+    | T
+    | {
+        columnNumber?: T;
+        heading?: T;
+        subText?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        label?: T;
+        linkType?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+      };
+  parent?: T;
+  order?: T;
+  column?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -2128,26 +2257,10 @@ export interface Header {
     image?: (number | null) | Media;
   };
   favicon?: (number | null) | Media;
-  navItems?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
+  /**
+   * Select and order the root items that appear in the navbar. Create items first in the Menu Items collection.
+   */
+  topLevelNav?: (number | MenuItem)[] | null;
   /**
    * Ghost-style CTA left of the primary button.
    */
@@ -2261,20 +2374,7 @@ export interface HeaderSelect<T extends boolean = true> {
         image?: T;
       };
   favicon?: T;
-  navItems?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
-        id?: T;
-      };
+  topLevelNav?: T;
   utilityCta?:
     | T
     | {

@@ -13,6 +13,7 @@ import { post3 } from './post-3'
 const collections: CollectionSlug[] = [
   'categories',
   'media',
+  'menu-items',
   'pages',
   'posts',
   'forms',
@@ -37,15 +38,16 @@ export const seed = async ({
 
   payload.logger.info(`— Clearing collections...`)
 
-  await Promise.all(
-    collections.map((collection) => payload.db.deleteMany({ collection, req, where: {} })),
-  )
+  // Sequential to avoid FK cascade deadlocks between cross-referencing tables
+  for (const collection of collections) {
+    await payload.db.deleteMany({ collection, req, where: {} })
+  }
 
-  await Promise.all(
-    collections
-      .filter((collection) => Boolean(payload.collections[collection].config.versions))
-      .map((collection) => payload.db.deleteVersions({ collection, req, where: {} })),
-  )
+  for (const collection of collections) {
+    if (payload.collections[collection].config.versions) {
+      await payload.db.deleteVersions({ collection, req, where: {} })
+    }
+  }
 
   payload.logger.info(`— Seeding demo author and user...`)
 
@@ -193,6 +195,217 @@ export const seed = async ({
     }),
   ])
 
+  payload.logger.info(`— Seeding menu items...`)
+
+  // Top-level root items
+  const [solutionsItem, vaultItem, companyItem] = await Promise.all([
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Solutions',
+        linkType: 'custom',
+        url: '/solutions',
+        megaPanel: true,
+        order: 1,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Vault',
+        linkType: 'custom',
+        url: '/vault',
+        megaPanel: true,
+        order: 2,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Company',
+        linkType: 'custom',
+        url: '/company',
+        megaPanel: true,
+        order: 3,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+  ])
+
+  // Solutions children
+  await Promise.all([
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Enterprise GRC',
+        description: 'Done-for-you strategic GTM & governance',
+        linkType: 'custom',
+        url: '/solutions/tofo-01',
+        parent: solutionsItem.id,
+        order: 1,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'ISO Certification Sprint',
+        description: 'High-intent implementation — 90-day delivery',
+        linkType: 'custom',
+        url: '/solutions/tofo-02',
+        parent: solutionsItem.id,
+        order: 2,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'AI Governance',
+        description: 'ISO 42001 & EU AI Act readiness',
+        linkType: 'custom',
+        url: '/solutions/tofo-03',
+        parent: solutionsItem.id,
+        order: 3,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+  ])
+
+  // Vault children
+  await Promise.all([
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Templates',
+        description: 'Freemium GRC asset library',
+        linkType: 'custom',
+        url: '/vault/templates',
+        parent: vaultItem.id,
+        order: 1,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'GRC Fundamentals',
+        description: 'Evergreen GRC guides',
+        linkType: 'custom',
+        url: '/vault/grc',
+        parent: vaultItem.id,
+        order: 2,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'ISO 27001',
+        description: 'Certification guides & checklists',
+        linkType: 'custom',
+        url: '/vault/iso-27001',
+        parent: vaultItem.id,
+        order: 3,
+        column: 2,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'SOC 2',
+        description: 'Readiness frameworks & templates',
+        linkType: 'custom',
+        url: '/vault/soc-2',
+        parent: vaultItem.id,
+        order: 4,
+        column: 2,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Blog',
+        description: 'Current insights & news',
+        linkType: 'custom',
+        url: '/vault/blog',
+        parent: vaultItem.id,
+        order: 5,
+        column: 2,
+      },
+      context: { disableRevalidate: true },
+    }),
+  ])
+
+  // Company children
+  await Promise.all([
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'About',
+        description: 'Our mission and team',
+        linkType: 'custom',
+        url: '/company/about',
+        parent: companyItem.id,
+        order: 1,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Careers',
+        description: 'Associates & open roles',
+        linkType: 'custom',
+        url: '/company/careers',
+        parent: companyItem.id,
+        order: 2,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Partners',
+        description: 'Partnerships & alliances',
+        linkType: 'custom',
+        url: '/company/partners',
+        parent: companyItem.id,
+        order: 3,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+    payload.create({
+      collection: 'menu-items',
+      data: {
+        label: 'Trust Centre',
+        description: 'Security posture & certifications',
+        linkType: 'custom',
+        url: 'https://trust.grcmana.io',
+        newTab: true,
+        parent: companyItem.id,
+        order: 4,
+        column: 1,
+      },
+      context: { disableRevalidate: true },
+    }),
+  ])
+
   payload.logger.info(`— Seeding header global...`)
 
   await payload.updateGlobal({
@@ -202,19 +415,7 @@ export const seed = async ({
         mark: 'GRCMANA',
         sub: 'Trust Architect',
       },
-      navItems: [
-        { link: { type: 'custom', label: 'Solutions', url: '/solutions' } },
-        { link: { type: 'custom', label: 'Services', url: '/services' } },
-        { link: { type: 'custom', label: 'Framework', url: '/framework' } },
-        { link: { type: 'custom', label: 'Resources', url: '/resources' } },
-        {
-          link: {
-            type: 'reference',
-            label: 'About',
-            reference: { relationTo: 'pages', value: contactPage.id },
-          },
-        },
-      ],
+      topLevelNav: [solutionsItem.id, vaultItem.id, companyItem.id],
       utilityCta: {
         link: {
           type: 'custom',

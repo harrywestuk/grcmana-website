@@ -47,19 +47,13 @@ export const Header: GlobalConfig = {
       label: 'Favicon (optional)',
     },
     {
-      name: 'navItems',
-      type: 'array',
-      fields: [
-        link({
-          appearances: false,
-        }),
-      ],
-      maxRows: 8,
+      name: 'topLevelNav',
+      type: 'relationship',
+      relationTo: 'menu-items',
+      hasMany: true,
+      label: 'Top-level navigation',
       admin: {
-        initCollapsed: true,
-        components: {
-          RowLabel: '@/Header/RowLabel#RowLabel',
-        },
+        description: 'Select and order the root items that appear in the navbar. Create items first in the Menu Items collection.',
       },
     },
     {
