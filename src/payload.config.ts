@@ -6,12 +6,12 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 import { resendAdapter } from '@payloadcms/email-resend'
 
+import { Articles } from './collections/Articles'
 import { Authors } from './collections/Authors'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { MenuItems } from './collections/MenuItems'
 import { Pages } from './collections/Pages'
-import { Posts } from './collections/Posts'
 import { Tags } from './collections/Tags'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
@@ -74,7 +74,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Tags, Authors, Users, MenuItems],
+  collections: [Pages, Articles, Media, Categories, Tags, Authors, Users, MenuItems],
 
   cors: [getServerSideURL()].filter(Boolean),
 

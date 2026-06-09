@@ -68,7 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
-    posts: Post;
+    articles: Article;
     media: Media;
     categories: Category;
     tags: Tag;
@@ -93,7 +93,7 @@ export interface Config {
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
@@ -211,8 +211,8 @@ export interface Page {
                   value: number | Page;
                 } | null)
               | ({
-                  relationTo: 'posts';
-                  value: number | Post;
+                  relationTo: 'articles';
+                  value: number | Article;
                 } | null);
             url?: string | null;
             label: string;
@@ -261,12 +261,14 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "articles".
  */
-export interface Post {
+export interface Article {
   id: number;
   title: string;
   heroImage?: (number | null) | Media;
+  heroImageAlt?: string | null;
+  heroStyle?: ('image' | 'gradient' | 'minimal') | null;
   content: {
     root: {
       type: string;
@@ -282,8 +284,17 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (number | Post)[] | null;
+  readTime?: number | null;
+  toc?:
+    | {
+        id?: string | null;
+        text?: string | null;
+        level?: string | null;
+      }[]
+    | null;
+  relatedArticles?: (number | Article)[] | null;
   categories?: (number | Category)[] | null;
+  tags?: (number | Tag)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -292,12 +303,17 @@ export interface Post {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  excerpt?: string | null;
+  featured?: boolean | null;
   publishedAt?: string | null;
-  authors?: (number | User)[] | null;
+  authors?: (number | Author)[] | null;
   populatedAuthors?:
     | {
         id?: string | null;
         name?: string | null;
+        avatar?: (number | null) | Media;
+        bio?: string | null;
+        linkedIn?: string | null;
       }[]
     | null;
   /**
@@ -464,29 +480,95 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "tags".
  */
-export interface User {
+export interface Tag {
   id: number;
-  name?: string | null;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  role?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  avatar?: (number | null) | Media;
+  bio?: string | null;
+  bioExtended?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  credentials?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        title?: string | null;
+        issuer?: string | null;
+        year?: number | null;
+        verificationUrl?: string | null;
+        verificationPlatform?: ('credly' | 'issuer' | 'other') | null;
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  expertise?:
+    | {
+        topic: string;
+        id?: string | null;
+      }[]
+    | null;
+  yearsExperience?: number | null;
+  organisations?:
+    | {
+        name?: string | null;
+        role?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  website?: string | null;
+  linkedIn?: string | null;
+  twitter?: string | null;
+  github?: string | null;
+  youtube?: string | null;
+  medium?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  pinterest?: string | null;
+  tiktok?: string | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -519,8 +601,8 @@ export interface CallToActionBlock {
                 value: number | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: number | Post;
+                relationTo: 'articles';
+                value: number | Article;
               } | null);
           url?: string | null;
           label: string;
@@ -569,8 +651,8 @@ export interface ContentBlock {
                 value: number | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: number | Post;
+                relationTo: 'articles';
+                value: number | Article;
               } | null);
           url?: string | null;
           label: string;
@@ -617,13 +699,13 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  relationTo?: 'articles' | null;
   categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
-        relationTo: 'posts';
-        value: number | Post;
+        relationTo: 'articles';
+        value: number | Article;
       }[]
     | null;
   id?: string | null;
@@ -889,8 +971,8 @@ export interface ServicesBlock {
                 value: number | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: number | Post;
+                relationTo: 'articles';
+                value: number | Article;
               } | null);
           url?: string | null;
           label: string;
@@ -1032,8 +1114,8 @@ export interface CommunityStripBlock {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'articles';
+          value: number | Article;
         } | null);
     url?: string | null;
     label: string;
@@ -1066,8 +1148,8 @@ export interface CtaCloseBlock {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'articles';
+          value: number | Article;
         } | null);
     url?: string | null;
     label: string;
@@ -1081,8 +1163,8 @@ export interface CtaCloseBlock {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'articles';
+          value: number | Article;
         } | null);
     url?: string | null;
     label: string;
@@ -1097,95 +1179,29 @@ export interface CtaCloseBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
+ * via the `definition` "users".
  */
-export interface Tag {
+export interface User {
   id: number;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  name?: string | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
- */
-export interface Author {
-  id: number;
-  name: string;
-  role?: string | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  avatar?: (number | null) | Media;
-  bio?: string | null;
-  bioExtended?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  credentials?:
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
     | {
-        title?: string | null;
-        issuer?: string | null;
-        year?: number | null;
-        verificationUrl?: string | null;
-        verificationPlatform?: ('credly' | 'issuer' | 'other') | null;
-        id?: string | null;
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
       }[]
     | null;
-  expertise?:
-    | {
-        topic: string;
-        id?: string | null;
-      }[]
-    | null;
-  yearsExperience?: number | null;
-  organisations?:
-    | {
-        name?: string | null;
-        role?: string | null;
-        url?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  website?: string | null;
-  linkedIn?: string | null;
-  twitter?: string | null;
-  github?: string | null;
-  youtube?: string | null;
-  medium?: string | null;
-  facebook?: string | null;
-  instagram?: string | null;
-  pinterest?: string | null;
-  tiktok?: string | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * Navigation items for the site mega menu. Create items here, then assign top-level items to the Header global.
@@ -1208,8 +1224,8 @@ export interface MenuItem {
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'posts';
-        value: number | Post;
+        relationTo: 'articles';
+        value: number | Article;
       } | null);
   /**
    * Absolute URL (https://…) or relative path (/solutions).
@@ -1252,8 +1268,8 @@ export interface MenuItem {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'articles';
+          value: number | Article;
         } | null);
     /**
      * Absolute URL (https://…) or relative path (/solutions).
@@ -1293,8 +1309,8 @@ export interface Redirect {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'articles';
+          value: number | Article;
         } | null);
     url?: string | null;
   };
@@ -1329,8 +1345,8 @@ export interface Search {
   title?: string | null;
   priority?: number | null;
   doc: {
-    relationTo: 'posts';
-    value: number | Post;
+    relationTo: 'articles';
+    value: number | Article;
   };
   slug?: string | null;
   meta?: {
@@ -1470,8 +1486,8 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'posts';
-        value: number | Post;
+        relationTo: 'articles';
+        value: number | Article;
       } | null)
     | ({
         relationTo: 'media';
@@ -1875,14 +1891,25 @@ export interface CtaCloseBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
+ * via the `definition` "articles_select".
  */
-export interface PostsSelect<T extends boolean = true> {
+export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
+  heroImageAlt?: T;
+  heroStyle?: T;
   content?: T;
-  relatedPosts?: T;
+  readTime?: T;
+  toc?:
+    | T
+    | {
+        id?: T;
+        text?: T;
+        level?: T;
+      };
+  relatedArticles?: T;
   categories?: T;
+  tags?: T;
   meta?:
     | T
     | {
@@ -1890,6 +1917,8 @@ export interface PostsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  excerpt?: T;
+  featured?: T;
   publishedAt?: T;
   authors?: T;
   populatedAuthors?:
@@ -1897,6 +1926,9 @@ export interface PostsSelect<T extends boolean = true> {
     | {
         id?: T;
         name?: T;
+        avatar?: T;
+        bio?: T;
+        linkedIn?: T;
       };
   generateSlug?: T;
   slug?: T;
@@ -2464,8 +2496,8 @@ export interface Header {
             value: number | Page;
           } | null)
         | ({
-            relationTo: 'posts';
-            value: number | Post;
+            relationTo: 'articles';
+            value: number | Article;
           } | null);
       url?: string | null;
       label: string;
@@ -2484,8 +2516,8 @@ export interface Header {
             value: number | Page;
           } | null)
         | ({
-            relationTo: 'posts';
-            value: number | Post;
+            relationTo: 'articles';
+            value: number | Article;
           } | null);
       url?: string | null;
       label: string;
@@ -2534,8 +2566,8 @@ export interface Footer {
                       value: number | Page;
                     } | null)
                   | ({
-                      relationTo: 'posts';
-                      value: number | Post;
+                      relationTo: 'articles';
+                      value: number | Article;
                     } | null);
                 url?: string | null;
                 label: string;
@@ -2663,8 +2695,8 @@ export interface TaskSchedulePublish {
           value: number | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: number | Post;
+          relationTo: 'articles';
+          value: number | Article;
         } | null)
       | ({
           relationTo: 'authors';
