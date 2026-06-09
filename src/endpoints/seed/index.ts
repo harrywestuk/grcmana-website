@@ -6,16 +6,16 @@ import { homeGrcmana } from './home-grcmana'
 import { image1 } from './image-1'
 import { image2 } from './image-2'
 import { imageHero1 } from './image-hero-1'
-import { post1 } from './post-1'
-import { post2 } from './post-2'
-import { post3 } from './post-3'
+import { article1 } from './article-1'
 
 const collections: CollectionSlug[] = [
   'categories',
+  'tags',
+  'authors',
+  'articles',
   'media',
   'menu-items',
   'pages',
-  'posts',
   'forms',
   'form-submissions',
   'search',
@@ -49,21 +49,9 @@ export const seed = async ({
     }
   }
 
-  payload.logger.info(`— Seeding demo author and user...`)
-
-  await payload.delete({
-    collection: 'users',
-    depth: 0,
-    where: {
-      email: {
-        equals: 'demo-author@example.com',
-      },
-    },
-  })
-
   payload.logger.info(`— Seeding media...`)
 
-  const [image1Buffer, image2Buffer, image3Buffer, previewBuffer] = await Promise.all([
+  const [image1Buffer, image2Buffer, previewBuffer] = await Promise.all([
     fetchFileByURL(
       'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post1.webp',
     ),
@@ -71,22 +59,11 @@ export const seed = async ({
       'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post2.webp',
     ),
     fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post3.webp',
-    ),
-    fetchFileByURL(
       'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-hero1.webp',
     ),
   ])
 
-  const [demoAuthor, image1Doc, image2Doc, image3Doc, previewImageDoc] = await Promise.all([
-    payload.create({
-      collection: 'users',
-      data: {
-        name: 'Demo Author',
-        email: 'demo-author@example.com',
-        password: 'password',
-      },
-    }),
+  const [image1Doc, image2Doc, previewImageDoc] = await Promise.all([
     payload.create({
       collection: 'media',
       data: image1,
@@ -99,71 +76,68 @@ export const seed = async ({
     }),
     payload.create({
       collection: 'media',
-      data: image2,
-      file: image3Buffer,
-    }),
-    payload.create({
-      collection: 'media',
       data: {
         ...imageHero1,
         alt: 'GRCMANA Trust Maturity Assessment — product preview placeholder',
       },
       file: previewBuffer,
     }),
-    categories.map((category) =>
-      payload.create({
-        collection: 'categories',
-        data: {
-          title: category,
-          slug: category,
-        },
-      }),
-    ),
   ])
 
-  payload.logger.info(`— Seeding posts...`)
+  payload.logger.info(`— Seeding categories...`)
 
-  const post1Doc = await payload.create({
-    collection: 'posts',
-    depth: 0,
-    context: {
-      disableRevalidate: true,
+  for (const category of categories) {
+    await payload.create({
+      collection: 'categories',
+      data: { title: category, slug: category.toLowerCase() },
+    })
+  }
+
+  const seedCategory = await payload.create({
+    collection: 'categories',
+    data: {
+      title: 'GRC',
+      slug: 'grc',
+      description: 'Governance, Risk & Compliance guidance and frameworks.',
     },
-    data: post1({ heroImage: image1Doc, blockImage: image2Doc, author: demoAuthor }),
   })
 
-  const post2Doc = await payload.create({
-    collection: 'posts',
+  payload.logger.info(`— Seeding tags...`)
+
+  const seedTag = await payload.create({
+    collection: 'tags',
+    data: { title: 'Getting Started', slug: 'getting-started' },
+  })
+
+  payload.logger.info(`— Seeding authors...`)
+
+  const seedAuthor = await payload.create({
+    collection: 'authors',
     depth: 0,
-    context: {
-      disableRevalidate: true,
+    context: { disableRevalidate: true },
+    data: {
+      _status: 'published',
+      name: 'Harry West',
+      slug: 'harry-west',
+      role: 'Founder & Trust Architect',
+      bio: 'Harry helps high-growth B2B tech startups close the Enterprise Trust Gap through security, governance, and AI resilience.',
+      linkedIn: 'https://www.linkedin.com/in/harrywestuk/',
     },
-    data: post2({ heroImage: image2Doc, blockImage: image3Doc, author: demoAuthor }),
   })
 
-  const post3Doc = await payload.create({
-    collection: 'posts',
+  payload.logger.info(`— Seeding articles...`)
+
+  await payload.create({
+    collection: 'articles',
     depth: 0,
-    context: {
-      disableRevalidate: true,
-    },
-    data: post3({ heroImage: image3Doc, blockImage: image1Doc, author: demoAuthor }),
-  })
-
-  await payload.update({
-    id: post1Doc.id,
-    collection: 'posts',
-    data: { relatedPosts: [post2Doc.id, post3Doc.id] },
-  })
-  await payload.update({
-    id: post2Doc.id,
-    collection: 'posts',
-    data: { relatedPosts: [post1Doc.id, post3Doc.id] },
-  })
-  await payload.update({
-    id: post3Doc.id,
-    collection: 'posts',
-    data: { relatedPosts: [post1Doc.id, post2Doc.id] },
+    context: { disableRevalidate: true },
+    data: article1({
+      heroImage: image1Doc,
+      blockImage: image2Doc,
+      author: seedAuthor,
+      category: seedCategory,
+      tag: seedTag,
+    }),
   })
 
   payload.logger.info(`— Seeding contact form...`)
