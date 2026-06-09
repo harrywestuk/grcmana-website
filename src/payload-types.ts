@@ -71,6 +71,8 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    tags: Tag;
+    authors: Author;
     users: User;
     'menu-items': MenuItem;
     redirects: Redirect;
@@ -94,6 +96,8 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'menu-items': MenuItemsSelect<false> | MenuItemsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -432,12 +436,21 @@ export interface FolderInterface {
 export interface Category {
   id: number;
   title: string;
+  description?: string | null;
+  parent?: (number | null) | Category;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
   slug: string;
-  parent?: (number | null) | Category;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
   breadcrumbs?:
     | {
         doc?: (number | null) | Category;
@@ -1083,6 +1096,98 @@ export interface CtaCloseBlock {
   blockType: 'ctaClose';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  role?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  avatar?: (number | null) | Media;
+  bio?: string | null;
+  bioExtended?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  credentials?:
+    | {
+        title?: string | null;
+        issuer?: string | null;
+        year?: number | null;
+        verificationUrl?: string | null;
+        verificationPlatform?: ('credly' | 'issuer' | 'other') | null;
+        id?: string | null;
+      }[]
+    | null;
+  expertise?:
+    | {
+        topic: string;
+        id?: string | null;
+      }[]
+    | null;
+  yearsExperience?: number | null;
+  organisations?:
+    | {
+        name?: string | null;
+        role?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  website?: string | null;
+  linkedIn?: string | null;
+  twitter?: string | null;
+  github?: string | null;
+  youtube?: string | null;
+  medium?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  pinterest?: string | null;
+  tiktok?: string | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * Navigation items for the site mega menu. Create items here, then assign top-level items to the Header global.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1375,6 +1480,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
       } | null)
     | ({
         relationTo: 'users';
@@ -1892,9 +2005,17 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
+  parent?: T;
   generateSlug?: T;
   slug?: T;
-  parent?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
   breadcrumbs?:
     | T
     | {
@@ -1905,6 +2026,75 @@ export interface CategoriesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  generateSlug?: T;
+  slug?: T;
+  avatar?: T;
+  bio?: T;
+  bioExtended?: T;
+  credentials?:
+    | T
+    | {
+        title?: T;
+        issuer?: T;
+        year?: T;
+        verificationUrl?: T;
+        verificationPlatform?: T;
+        id?: T;
+      };
+  expertise?:
+    | T
+    | {
+        topic?: T;
+        id?: T;
+      };
+  yearsExperience?: T;
+  organisations?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+        url?: T;
+        id?: T;
+      };
+  website?: T;
+  linkedIn?: T;
+  twitter?: T;
+  github?: T;
+  youtube?: T;
+  medium?: T;
+  facebook?: T;
+  instagram?: T;
+  pinterest?: T;
+  tiktok?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2475,6 +2665,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'posts';
           value: number | Post;
+        } | null)
+      | ({
+          relationTo: 'authors';
+          value: number | Author;
         } | null);
     global?: string | null;
     user?: (number | null) | User;
