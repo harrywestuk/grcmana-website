@@ -11,6 +11,7 @@ import { Media } from './collections/Media'
 import { MenuItems } from './collections/MenuItems'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Tags } from './collections/Tags'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
@@ -72,7 +73,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MenuItems],
+  collections: [Pages, Posts, Media, Categories, Tags, Users, MenuItems],
 
   cors: [getServerSideURL()].filter(Boolean),
 
