@@ -659,6 +659,58 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, menuTree }) =>
                               </ul>
                             </div>
                           ))}
+                          {item.cta?.label && (() => {
+                            const ctaHref = resolvePanelCtaHref(item.cta)
+                            return (
+                              <div
+                                style={{
+                                  marginTop: '4px',
+                                  borderTop: '1px solid var(--ds-border)',
+                                  background: 'var(--ink-900)',
+                                  marginLeft: '-16px',
+                                  marginRight: '-16px',
+                                  paddingLeft: '16px',
+                                  paddingRight: '16px',
+                                }}
+                              >
+                                <Link
+                                  href={ctaHref}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    padding: '14px 0',
+                                    textDecoration: 'none',
+                                  }}
+                                  {...(item.cta.newTab
+                                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                                    : {})}
+                                >
+                                  <span
+                                    style={{
+                                      fontFamily: 'var(--font-dm-mono), monospace',
+                                      fontSize: '10px',
+                                      fontWeight: 500,
+                                      letterSpacing: '0.1em',
+                                      textTransform: 'uppercase',
+                                      color: 'var(--signal-500)',
+                                    }}
+                                  >
+                                    {item.cta.label}
+                                  </span>
+                                  <span
+                                    style={{
+                                      fontFamily: 'var(--font-dm-mono), monospace',
+                                      fontSize: '10px',
+                                      color: 'var(--signal-500)',
+                                    }}
+                                  >
+                                    →
+                                  </span>
+                                </Link>
+                              </div>
+                            )
+                          })()}
                         </div>
                       )}
                     </li>
