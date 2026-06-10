@@ -6,66 +6,24 @@ export const MetricsBandBlock: React.FC<MetricsBandBlockProps> = ({ metrics }) =
   if (!metrics || metrics.length === 0) return null
 
   return (
-    <section
-      style={{
-        background: 'var(--ink-950)',
-        borderTop: '1px solid var(--ds-border)',
-        borderBottom: '1px solid var(--ds-border)',
-        paddingBlock: '56px',
-      }}
-    >
+    <section className="bg-ink-950 border-y border-ds-border py-section-y">
       <div className="container">
-        <div
-          className="grid-metrics"
-        >
+        <div className="grid-metrics">
           {metrics.map((metric) => (
             <div
               key={metric.id ?? metric.value}
-              className="reveal"
-              style={{
-                background: 'var(--ink-950)',
-                padding: '40px 32px',
-                textAlign: 'center',
-              }}
+              className="reveal bg-ink-950 p-10 text-center"
             >
-              <div
-                style={{
-                  fontFamily: 'var(--font-dm-serif), Georgia, serif',
-                  fontSize: 'clamp(48px, 6vw, 72px)',
-                  fontWeight: 400,
-                  lineHeight: 1,
-                  letterSpacing: '-0.03em',
-                  color: '#ffffff',
-                  marginBottom: '4px',
-                }}
-              >
+              <div className="font-display font-normal text-metric text-white mb-1">
                 {metric.value}
               </div>
               {metric.qualifier && (
-                <div
-                  style={{
-                    fontFamily: 'var(--font-dm-mono), monospace',
-                    fontSize: '9px',
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    color: 'var(--signal-500)',
-                    marginBottom: '12px',
-                  }}
-                >
+                <div className="font-mono text-[9px] tracking-[0.12em] uppercase text-signal-500 mb-3">
                   {metric.qualifier}
                 </div>
               )}
               {metric.description && (
-                <p
-                  style={{
-                    fontFamily: 'var(--font-syne), system-ui, sans-serif',
-                    fontSize: '13px',
-                    lineHeight: 1.6,
-                    color: 'var(--ink-300)',
-                    maxWidth: '240px',
-                    marginInline: 'auto',
-                  }}
-                >
+                <p className="font-sans text-[13px] leading-[1.6] text-ink-300 max-w-[240px] mx-auto">
                   {metric.description}
                 </p>
               )}

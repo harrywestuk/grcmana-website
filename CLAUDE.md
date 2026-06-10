@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-- Framework: Next.js 15 (App Router, TypeScript strict mode)
+- Framework: Next.js 16 (App Router, TypeScript strict mode)
 - CMS: PayloadCMS 3.x (runs inside Next.js, no separate server)
 - Database: Supabase (PostgreSQL via `@payloadcms/db-postgres`)
 - Media: S3-compatible via `@payloadcms/storage-s3` (Supabase Storage bucket)
@@ -129,6 +129,12 @@ The jobs queue handles scheduled publishing. Cron is protected by `CRON_SECRET` 
 - Co-locate component styles; no global CSS except `/app/globals.css`
 - After any schema change, run `pnpm payload generate:types` to update `payload-types.ts`
 - For Postgres schema changes in development, `push: true` is active — migrations are only needed for production deploys
+
+## Tailwind CSS
+
+- Version: v4
+- Configuration goes in globals.css under @theme
+- Do not create tailwind.config.ts
 
 ## Environment Variables
 

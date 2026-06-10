@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 
-export const redirects: NextConfig['redirects'] = async () => {
+export const redirects: NonNullable<NextConfig['redirects']> = async () => {
   const internetExplorerRedirect = {
     destination: '/ie-incompatible.html',
     has: [

@@ -29,90 +29,37 @@ export const CtaCloseBlock: React.FC<CtaCloseBlockProps> = ({
   note,
 }) => {
   return (
-    <section
-      style={{
-        background: 'var(--ink-950)',
-        paddingBlock: 'var(--section-y)',
-        borderTop: '1px solid var(--ds-border)',
-        textAlign: 'center',
-      }}
-    >
+    <section className="bg-ink-950 border-t border-ds-border py-section-y text-center">
       <div className="container container--narrow">
         {eyebrow && (
-          <span
-            className="reveal eyebrow"
-            style={{ display: 'inline-flex', justifyContent: 'center', marginBottom: 'var(--gap-base)' }}
-          >
+          <span className="reveal eyebrow inline-flex justify-center mb-base">
             {eyebrow}
           </span>
         )}
+
         {(heading || headingAccent) && (
           <h2
-            className="reveal"
-            style={{
-              fontFamily: 'var(--font-dm-serif), Georgia, serif',
-              fontSize: 'clamp(36px, 5vw, 60px)',
-              fontWeight: 400,
-              lineHeight: 1.05,
-              letterSpacing: '-0.03em',
-              marginBottom: body ? 'var(--gap-base)' : 'var(--gap-loose)',
-            }}
+            className={`reveal font-display font-normal text-display-cta ${body ? 'mb-base' : 'mb-loose'}`}
           >
             {heading}
             {heading && headingAccent && <br />}
             {headingAccent && (
-              <em style={{ fontStyle: 'italic', color: 'var(--signal-500)' }}>
-                {headingAccent}
-              </em>
+              <em className="italic text-signal-500">{headingAccent}</em>
             )}
           </h2>
         )}
+
         {body && (
-          <p
-            className="reveal"
-            style={{
-              fontFamily: 'var(--font-syne), system-ui, sans-serif',
-              fontSize: '16px',
-              lineHeight: 1.65,
-              color: 'var(--ink-200)',
-              marginBottom: 'var(--gap-loose)',
-              maxWidth: '480px',
-              marginInline: 'auto',
-            }}
-          >
+          <p className="reveal font-sans text-[16px] leading-[1.65] text-ink-200 mb-loose max-w-[480px] mx-auto">
             {body}
           </p>
         )}
-        <div
-          className="reveal"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '14px',
-            flexWrap: 'wrap',
-            marginBottom: note ? '20px' : 0,
-          }}
-        >
+
+        <div className={`reveal flex items-center justify-center gap-3.5 flex-wrap ${note ? 'mb-5' : ''}`}>
           {primaryCta?.label && (
             <Link
               href={resolveHref(primaryCta)}
-              style={{
-                fontFamily: 'var(--font-dm-mono), monospace',
-                fontSize: '12px',
-                fontWeight: 500,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                background: 'var(--signal-500)',
-                color: 'var(--ink-900)',
-                padding: '16px 32px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                textDecoration: 'none',
-                transition: 'all var(--dur-base) var(--ease-out)',
-                whiteSpace: 'nowrap',
-              }}
+              className="font-mono text-[12px] font-medium tracking-[0.08em] uppercase bg-signal-500 text-ink-900 px-8 py-4 inline-flex items-center gap-1.5 no-underline transition-all duration-base ease-brand hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]"
               {...(primaryCta.newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             >
               {primaryCta.label}
@@ -121,39 +68,16 @@ export const CtaCloseBlock: React.FC<CtaCloseBlockProps> = ({
           {secondaryCta?.label && (
             <Link
               href={resolveHref(secondaryCta)}
-              style={{
-                fontFamily: 'var(--font-dm-mono), monospace',
-                fontSize: '12px',
-                fontWeight: 500,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                background: 'transparent',
-                color: 'var(--ink-200)',
-                padding: '16px 32px',
-                border: '1px solid var(--ds-border)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                textDecoration: 'none',
-                transition: 'all var(--dur-base) var(--ease-out)',
-                whiteSpace: 'nowrap',
-              }}
+              className="font-mono text-[12px] font-medium tracking-[0.08em] uppercase bg-transparent text-ink-200 px-8 py-4 border border-ds-border inline-flex items-center gap-1.5 no-underline transition-all duration-base ease-brand hover:border-ds-border-hover hover:text-white"
               {...(secondaryCta.newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             >
               {secondaryCta.label}
             </Link>
           )}
         </div>
+
         {note && (
-          <p
-            className="reveal"
-            style={{
-              fontFamily: 'var(--font-dm-mono), monospace',
-              fontSize: '9px',
-              letterSpacing: '0.08em',
-              color: 'var(--ink-500)',
-            }}
-          >
+          <p className="reveal font-mono text-[9px] tracking-[0.08em] text-ink-500">
             {note}
           </p>
         )}

@@ -43,9 +43,59 @@
   --breakpoint-lg: 64rem;
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 86rem;
-  /* Updated to GRCMANA design system fonts */
-  --font-mono: var(--font-dm-mono);
-  --font-sans: var(--font-syne);
+
+  /* ---- Fonts ---- */
+  --font-display: var(--font-dm-serif);
+  --font-sans:    var(--font-syne);
+  --font-mono:    var(--font-dm-mono);
+
+  /* ---- Ink ramp ---- */
+  --color-ink-950: var(--ink-950);
+  --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-ink-300: var(--ink-300);
+  --color-ink-200: var(--ink-200);
+  --color-ink-100: var(--ink-100);
+  --color-ink-50:  var(--ink-50);
+
+  /* ---- Signal Yellow ---- */
+  --color-signal-400: var(--signal-400);
+  --color-signal-500: var(--signal-500);
+  --color-signal-600: var(--signal-600);
+  --color-signal-700: var(--signal-700);
+  --color-signal-a12: var(--signal-a12);
+  --color-signal-a06: var(--signal-a06);
+  --color-signal-a04: var(--signal-a04);
+  --color-signal-a03: var(--signal-a03);
+
+  /* ---- Semantic status ---- */
+  --color-ds-success: var(--ds-success);
+  --color-ds-warning: var(--ds-warning);
+  --color-ds-danger:  var(--ds-danger);
+  --color-ds-info:    var(--ds-info);
+
+  /* ---- Border tokens (fixed rgba — Option A) ---- */
+  --color-ds-border:        var(--ds-border);
+  --color-ds-border-hover:  var(--ds-border-hover);
+  --color-ds-border-signal: var(--ds-border-signal);
+
+  /* ---- Motion ---- */
+  --duration-fast: var(--dur-fast);
+  --duration-base: var(--dur-base);
+  --duration-slow: var(--dur-slow);
+  --ease-brand:    var(--ease-out);
+  --ease-brand-in: var(--ease-in);
+
+  /* ---- Semantic spacing ---- */
+  --spacing-tight:        var(--gap-tight);
+  --spacing-base:         var(--gap-base);
+  --spacing-loose:        var(--gap-loose);
+  --spacing-section-y:    var(--section-y);
+  --spacing-section-hero: var(--section-y-hero);
 }
 
 /* ============================================
@@ -72,6 +122,7 @@
   --signal-700: #b8d930;
   --signal-a12: rgba(232, 255, 71, 0.12);
   --signal-a06: rgba(232, 255, 71, 0.06);
+  --signal-a04: rgba(232, 255, 71, 0.04);
   --signal-a03: rgba(232, 255, 71, 0.03);
 
   /* Semantic status colours */
@@ -138,6 +189,19 @@
     grid-template-columns: 1fr;
     gap: 36px;
   }
+}
+
+/* Phase grid — hairline-gap technique: grid bg shows through 1px gaps */
+.grid-phases {
+  display: grid;
+  gap: 1px;
+  background: var(--ds-border);
+}
+@media (min-width: 769px) {
+  .grid-phases { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+}
+@media (max-width: 768px) {
+  .grid-phases { grid-template-columns: 1fr; }
 }
 
 /* 3-column metrics → stack on mobile */
@@ -337,6 +401,40 @@
 
 .eyebrow--signal {
   color: var(--signal-500);
+}
+
+/* Display heading sizes — font-family applied separately via font-display Tailwind class */
+.text-display-h1 {
+  font-size: clamp(52px, 8vw, 88px);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+}
+
+/* CTA close headline — slightly larger arc than standard h2 */
+.text-display-cta {
+  font-size: clamp(36px, 5vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+/* Standard section h2 */
+.text-display-h2 {
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.text-display-h3 {
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+/* Metric numeral — used in MetricsBandBlock */
+.text-metric {
+  font-size: clamp(48px, 6vw, 72px);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
 }
 
 /* ============================================
