@@ -557,14 +557,14 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, menuTree }) =>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Link
                           href={hasChildren ? '#' : href}
-                          onClick={
-                            hasChildren
-                              ? (e) => {
+                          {...(hasChildren
+                            ? {
+                                onClick: (e: React.MouseEvent<HTMLAnchorElement>) => {
                                   e.preventDefault()
                                   setExpandedMobile(isExpanded ? null : item.id)
-                                }
-                              : undefined
-                          }
+                                },
+                              }
+                            : {})}
                           style={{
                             flex: 1,
                             display: 'block',

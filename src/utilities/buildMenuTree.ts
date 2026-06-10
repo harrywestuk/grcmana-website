@@ -40,7 +40,7 @@ export function groupByColumn(item: MenuItemNode): ColumnGroup[] {
     .map((colKey) => ({
       colKey,
       meta: metaByColumn[colKey],
-      children: columns[colKey],
+      children: columns[colKey] ?? [],
     }))
 }
 
