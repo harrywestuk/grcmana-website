@@ -3,7 +3,12 @@ import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import React from 'react'
 
-import type { Page, Post } from '@/payload-types'
+import type { Article, Page } from '@/payload-types'
+
+const collectionPathMap: Record<string, string> = {
+  pages: '',
+  articles: '/blog',
+}
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -12,8 +17,8 @@ type CMSLinkType = {
   label?: string | null
   newTab?: boolean | null
   reference?: {
-    relationTo: 'pages' | 'posts'
-    value: Page | Post | string | number
+    relationTo: 'pages' | 'articles'
+    value: Page | Article | string | number
   } | null
   size?: ButtonProps['size'] | null
   type?: 'custom' | 'reference' | null
@@ -33,11 +38,10 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     url,
   } = props
 
+  const prefix = reference?.relationTo ? (collectionPathMap[reference.relationTo] ?? `/${reference.relationTo}`) : ''
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
-      ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
-          reference.value.slug
-        }`
+      ? `${prefix}/${reference.value.slug}`
       : url
 
   if (!href) return null

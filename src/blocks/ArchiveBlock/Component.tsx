@@ -1,4 +1,4 @@
-import type { Article, Post, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
+import type { Article, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -19,12 +19,10 @@ export const ArchiveBlock: React.FC<
     introContent,
     limit: limitFromProps,
     populateBy,
-    relationTo,
     selectedDocs,
   } = props
 
   const limit = limitFromProps || 3
-  const collection = relationTo === 'articles' ? 'articles' : 'posts'
 
   let docs: CardPostData[] = []
 
@@ -36,32 +34,20 @@ export const ArchiveBlock: React.FC<
       else return category
     })
 
-    if (collection === 'articles') {
-      const fetched = await payload.find({
-        collection: 'articles',
-        depth: 1,
-        limit,
-        ...(flattenedCategories && flattenedCategories.length > 0
-          ? { where: { categories: { in: flattenedCategories } } }
-          : {}),
-      })
-      docs = fetched.docs as Article[]
-    } else {
-      const fetched = await payload.find({
-        collection: 'posts',
-        depth: 1,
-        limit,
-        ...(flattenedCategories && flattenedCategories.length > 0
-          ? { where: { categories: { in: flattenedCategories } } }
-          : {}),
-      })
-      docs = fetched.docs as Post[]
-    }
+    const fetched = await payload.find({
+      collection: 'articles',
+      depth: 1,
+      limit,
+      ...(flattenedCategories && flattenedCategories.length > 0
+        ? { where: { categories: { in: flattenedCategories } } }
+        : {}),
+    })
+    docs = fetched.docs as Article[]
   } else {
     if (selectedDocs?.length) {
       docs = selectedDocs
         .filter((doc) => typeof doc.value === 'object')
-        .map((doc) => doc.value) as (Post | Article)[]
+        .map((doc) => doc.value) as Article[]
     }
   }
 
@@ -72,7 +58,7 @@ export const ArchiveBlock: React.FC<
           <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
         </div>
       )}
-      <CollectionArchive posts={docs} relationTo={collection} />
+      <CollectionArchive posts={docs} relationTo="articles" />
     </div>
   )
 }
