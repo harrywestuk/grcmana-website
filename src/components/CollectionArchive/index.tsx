@@ -5,11 +5,11 @@ import { Card, CardPostData } from '@/components/Card'
 
 export type Props = {
   posts: CardPostData[]
-  relationTo?: 'posts' | 'articles'
+  relationTo?: 'articles'
 }
 
 export const CollectionArchive: React.FC<Props> = (props) => {
-  const { posts, relationTo = 'posts' } = props
+  const { posts, relationTo = 'articles' } = props
 
   return (
     <div className={cn('container')}>

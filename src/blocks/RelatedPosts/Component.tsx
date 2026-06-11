@@ -9,11 +9,11 @@ export type RelatedPostsProps = {
   className?: string
   docs?: CardPostData[]
   introContent?: DefaultTypedEditorState
-  relationTo?: 'posts' | 'articles'
+  relationTo?: 'articles'
 }
 
 export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
-  const { className, docs, introContent, relationTo = 'posts' } = props
+  const { className, docs, introContent, relationTo = 'articles' } = props
 
   return (
     <div className={clsx('lg:container', className)}>

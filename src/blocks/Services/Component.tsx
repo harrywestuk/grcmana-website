@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import React from 'react'
 
-import type { ServicesBlock as ServicesBlockProps, Page, Post } from '@/payload-types'
+import type { ServicesBlock as ServicesBlockProps, Page, Article } from '@/payload-types'
 
 type ServiceLink = {
   type?: ('reference' | 'custom') | null
   newTab?: boolean | null
   reference?:
     | ({ relationTo: 'pages'; value: number | Page } | null)
-    | ({ relationTo: 'posts'; value: number | Post } | null)
+    | ({ relationTo: 'articles'; value: number | Article } | null)
   url?: string | null
   label: string
 }

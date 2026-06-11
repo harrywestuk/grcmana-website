@@ -57,8 +57,8 @@ export const MenuItems: CollectionConfig = {
     {
       name: 'reference',
       type: 'relationship',
-      relationTo: ['pages', 'posts'],
-      label: 'Page / Post',
+      relationTo: ['pages', 'articles'],
+      label: 'Page / Article',
       admin: {
         condition: (_, siblingData) => siblingData?.linkType === 'internal',
       },
@@ -188,8 +188,8 @@ export const MenuItems: CollectionConfig = {
         {
           name: 'reference',
           type: 'relationship',
-          relationTo: ['pages', 'posts'],
-          label: 'Page / Post',
+          relationTo: ['pages', 'articles'],
+          label: 'Page / Article',
           admin: {
             condition: (_, siblingData) => siblingData?.linkType === 'internal',
           },
