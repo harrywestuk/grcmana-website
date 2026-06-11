@@ -6,6 +6,10 @@ const defaultLabels = {
 }
 
 const defaultCollectionLabels = {
+  articles: {
+    plural: 'Articles',
+    singular: 'Article',
+  },
   posts: {
     plural: 'Posts',
     singular: 'Post',

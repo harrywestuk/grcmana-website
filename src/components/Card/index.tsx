@@ -10,11 +10,16 @@ import { Media } from '@/components/Media'
 
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
+const relationToPath: Record<string, string> = {
+  posts: 'posts',
+  articles: 'blog',
+}
+
 export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: CardPostData
-  relationTo?: 'posts'
+  relationTo?: 'posts' | 'articles'
   showCategories?: boolean
   title?: string
 }> = (props) => {
@@ -27,7 +32,8 @@ export const Card: React.FC<{
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  const pathPrefix = relationTo ? (relationToPath[relationTo] ?? relationTo) : 'posts'
+  const href = `/${pathPrefix}/${slug}`
 
   return (
     <article

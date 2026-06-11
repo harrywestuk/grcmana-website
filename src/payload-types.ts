@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    articles: Article;
     authors: Author;
     pages: Page;
     posts: Post;
@@ -91,6 +92,7 @@ export interface Config {
     };
   };
   collectionsSelect: {
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
@@ -157,18 +159,15 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
+ * via the `definition` "articles".
  */
-export interface Author {
+export interface Article {
   id: number;
-  name: string;
-  role?: string | null;
-  avatar?: (number | null) | Media;
-  /**
-   * 150–300 characters. Used on article bylines.
-   */
-  bio?: string | null;
-  bioExtended?: {
+  title: string;
+  heroImage?: (number | null) | Media;
+  heroImageAlt?: string | null;
+  heroStyle?: ('image' | 'gradient' | 'minimal') | null;
+  content: {
     root: {
       type: string;
       children: {
@@ -182,45 +181,24 @@ export interface Author {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
-  yearsExperience?: number | null;
-  credentials?:
-    | {
-        title?: string | null;
-        issuer?: string | null;
-        year?: number | null;
-        verificationUrl?: string | null;
-        verificationPlatform?: ('credly' | 'issuer' | 'other') | null;
-        id?: string | null;
-      }[]
-    | null;
+  };
   /**
-   * Topic tags rendered as badges on the profile page and article byline.
+   * Auto-calculated from content word count at ~200wpm.
    */
-  expertise?:
+  readTime?: number | null;
+  /**
+   * Auto-generated from h2/h3 headings in content.
+   */
+  toc?:
     | {
-        label: string;
+        text?: string | null;
+        anchor?: string | null;
+        level?: ('h2' | 'h3') | null;
         id?: string | null;
       }[]
     | null;
-  organisations?:
-    | {
-        name?: string | null;
-        role?: string | null;
-        url?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  website?: string | null;
-  linkedIn?: string | null;
-  twitter?: string | null;
-  github?: string | null;
-  youtube?: string | null;
-  medium?: string | null;
-  facebook?: string | null;
-  instagram?: string | null;
-  pinterest?: string | null;
-  tiktok?: string | null;
+  relatedArticles?: (number | Article)[] | null;
+  categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -229,6 +207,22 @@ export interface Author {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  /**
+   * Max 150 characters. Used on cards and as meta description fallback.
+   */
+  excerpt?: string | null;
+  publishedAt?: string | null;
+  featured?: boolean | null;
+  authors?: (number | Author)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+        avatar?: (number | null) | Media;
+        bio?: string | null;
+        linkedIn?: string | null;
+      }[]
+    | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -357,6 +351,122 @@ export interface FolderInterface {
   folderType?: 'media'[] | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  title: string;
+  description?: string | null;
+  parent?: (number | null) | Category;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Category;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  role?: string | null;
+  avatar?: (number | null) | Media;
+  /**
+   * 150–300 characters. Used on article bylines.
+   */
+  bio?: string | null;
+  bioExtended?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  yearsExperience?: number | null;
+  credentials?:
+    | {
+        title?: string | null;
+        issuer?: string | null;
+        year?: number | null;
+        verificationUrl?: string | null;
+        verificationPlatform?: ('credly' | 'issuer' | 'other') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Topic tags rendered as badges on the profile page and article byline.
+   */
+  expertise?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  organisations?:
+    | {
+        name?: string | null;
+        role?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  website?: string | null;
+  linkedIn?: string | null;
+  twitter?: string | null;
+  github?: string | null;
+  youtube?: string | null;
+  medium?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  pinterest?: string | null;
+  tiktok?: string | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -509,39 +619,6 @@ export interface Post {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  title: string;
-  description?: string | null;
-  parent?: (number | null) | Category;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  breadcrumbs?:
-    | {
-        doc?: (number | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -698,14 +775,20 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  relationTo?: ('articles' | 'posts') | null;
   categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: number | Post;
-      }[]
+    | (
+        | {
+            relationTo: 'posts';
+            value: number | Post;
+          }
+        | {
+            relationTo: 'articles';
+            value: number | Article;
+          }
+      )[]
     | null;
   id?: string | null;
   blockName?: string | null;
@@ -1284,6 +1367,10 @@ export interface Redirect {
       | ({
           relationTo: 'posts';
           value: number | Post;
+        } | null)
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
         } | null);
     url?: string | null;
   };
@@ -1317,10 +1404,15 @@ export interface Search {
   id: number;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: number | Post;
-  };
+  doc:
+    | {
+        relationTo: 'posts';
+        value: number | Post;
+      }
+    | {
+        relationTo: 'articles';
+        value: number | Article;
+      };
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -1455,6 +1547,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null)
+    | ({
         relationTo: 'authors';
         value: number | Author;
       } | null)
@@ -1543,6 +1639,53 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  heroImage?: T;
+  heroImageAlt?: T;
+  heroStyle?: T;
+  content?: T;
+  readTime?: T;
+  toc?:
+    | T
+    | {
+        text?: T;
+        anchor?: T;
+        level?: T;
+        id?: T;
+      };
+  relatedArticles?: T;
+  categories?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  excerpt?: T;
+  publishedAt?: T;
+  featured?: T;
+  authors?: T;
+  populatedAuthors?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+        avatar?: T;
+        bio?: T;
+        linkedIn?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2632,6 +2775,10 @@ export interface TaskSchedulePublish {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
     doc?:
+      | ({
+          relationTo: 'articles';
+          value: number | Article;
+        } | null)
       | ({
           relationTo: 'authors';
           value: number | Author;

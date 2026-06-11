@@ -6,6 +6,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 import { resendAdapter } from '@payloadcms/email-resend'
 
+import { Articles } from './collections/Articles'
 import { Authors } from './collections/Authors'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
@@ -73,7 +74,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Authors, Pages, Posts, Media, Categories, Users, MenuItems],
+  collections: [Articles, Authors, Pages, Posts, Media, Categories, Users, MenuItems],
 
   cors: [getServerSideURL()].filter(Boolean),
 

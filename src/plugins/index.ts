@@ -10,15 +10,19 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
-import { Category, Page, Post } from '@/payload-types'
+import { Article, Category, Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 
-const generateTitle: GenerateTitle<Post | Page | Category> = ({ doc }) => {
+const generateTitle: GenerateTitle<Article | Post | Page | Category> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
 }
 
-const generateURL: GenerateURL<Post | Page | Category> = ({ doc, collectionConfig }) => {
+const generateURL: GenerateURL<Article | Post | Page | Category> = ({ doc, collectionConfig }) => {
   const url = getServerSideURL()
+
+  if (collectionConfig?.slug === 'articles') {
+    return doc?.slug ? `${url}/blog/${doc.slug}` : url
+  }
 
   if (collectionConfig?.slug === 'categories') {
     return doc?.slug ? `${url}/categories/${doc.slug}` : url
@@ -29,7 +33,7 @@ const generateURL: GenerateURL<Post | Page | Category> = ({ doc, collectionConfi
 
 export const plugins: Plugin[] = [
   redirectsPlugin({
-    collections: ['pages', 'posts'],
+    collections: ['pages', 'posts', 'articles'],
     overrides: {
       // @ts-expect-error - This is a valid override, mapped fields don't resolve to the same type
       fields: ({ defaultFields }) => {
@@ -85,7 +89,7 @@ export const plugins: Plugin[] = [
     },
   }),
   searchPlugin({
-    collections: ['posts'],
+    collections: ['posts', 'articles'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
       fields: ({ defaultFields }) => {

@@ -51,6 +51,10 @@ export const Archive: Block = {
       label: 'Collections To Show',
       options: [
         {
+          label: 'Articles',
+          value: 'articles',
+        },
+        {
           label: 'Posts',
           value: 'posts',
         },
@@ -84,7 +88,7 @@ export const Archive: Block = {
       },
       hasMany: true,
       label: 'Selection',
-      relationTo: ['posts'],
+      relationTo: ['posts', 'articles'],
     },
   ],
   labels: {
