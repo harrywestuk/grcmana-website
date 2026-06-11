@@ -1,10 +1,13 @@
 'use client'
 
 import React, { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 export const ScrollReveal: React.FC = () => {
+  const pathname = usePathname()
+
   useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>('.reveal')
+    const els = document.querySelectorAll<HTMLElement>('.reveal:not(.in)')
 
     if (els.length === 0) return
 
@@ -23,7 +26,7 @@ export const ScrollReveal: React.FC = () => {
     els.forEach((el) => observer.observe(el))
 
     return () => observer.disconnect()
-  }, [])
+  }, [pathname])
 
   return null
 }
