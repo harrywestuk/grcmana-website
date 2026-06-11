@@ -15,8 +15,8 @@ One sentence. What this sprint delivers and why.
 
 ## Scope
 
-| Type | Item | Path |
-|---|---|---|
+| Type                          | Item | Path               |
+| ----------------------------- | ---- | ------------------ |
 | collection / page / component | Name | `src/path/to/file` |
 
 ---
@@ -25,10 +25,10 @@ One sentence. What this sprint delivers and why.
 
 Read before writing any code:
 
-| Reference | Path |
-|---|---|
-| Design system | `/docs/design-system/design-system.md` |
-| Collection spec | `/docs/collections/[name].md` |
+| Reference       | Path                                   |
+| --------------- | -------------------------------------- |
+| Design system   | `/docs/design-system/design-system.md` |
+| Collection spec | `/docs/collections/[name].md`          |
 
 ---
 
