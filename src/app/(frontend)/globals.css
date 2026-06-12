@@ -571,6 +571,99 @@ body.cursor-hover .c-ring {
 }
 
 /* ============================================
+   C-04 ARTICLE HEADER — Centered Editorial Stack
+   ============================================ */
+.article-header {
+  padding-top: calc(var(--section-y-hero) + 60px);
+  padding-bottom: 64px;
+  padding-inline: var(--gutter);
+  position: relative;
+  overflow: hidden;
+}
+
+.article-header__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 600px 400px at 50% 60%, rgba(232, 255, 71, 0.04) 0%, transparent 65%);
+}
+
+.article-header__inner {
+  position: relative;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.breadcrumb-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.breadcrumb-eyebrow__item {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-200);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.breadcrumb-eyebrow__item:hover {
+  color: var(--white);
+}
+
+.breadcrumb-eyebrow__sep {
+  color: var(--ink-300);
+  font-size: 9px;
+  font-weight: 400;
+}
+
+.article-header__title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(38px, 5.5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  color: var(--white);
+  margin-bottom: 36px;
+}
+
+.article-header__title em {
+  font-style: italic;
+  color: var(--signal-500);
+}
+
+.article-header__clean-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+}
+
+.article-header__clean-meta .author-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.article-header__clean-meta .separator {
+  color: var(--ink-600);
+  margin-inline: 8px;
+}
+
+/* ============================================
    C-11 AUTHOR BIO CARD
    ============================================ */
 .author-bio {

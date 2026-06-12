@@ -114,6 +114,16 @@ export const Articles: CollectionConfig<'articles'> = {
       name: 'title',
       type: 'text',
       required: true,
+      admin: {
+        description: 'Enter the full SEO title of the article.',
+      },
+    },
+    {
+      name: 'titleEmphasis',
+      type: 'text',
+      admin: {
+        description: 'Enter the title text that you want to emphasise.',
+      },
     },
     {
       type: 'tabs',

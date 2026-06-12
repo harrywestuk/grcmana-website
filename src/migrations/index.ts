@@ -8,6 +8,7 @@ import * as migration_20260611_110058 from './20260611_110058';
 import * as migration_20260611_151800 from './20260611_151800';
 import * as migration_20260611_170000 from './20260611_170000';
 import * as migration_20260612_aio_snippet from './20260612_aio_snippet';
+import * as migration_20260612_add_title_emphasis from './20260612_add_title_emphasis';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20260612_aio_snippet.up,
     down: migration_20260612_aio_snippet.down,
     name: '20260612_aio_snippet',
+  },
+  {
+    up: migration_20260612_add_title_emphasis.up,
+    down: migration_20260612_add_title_emphasis.down,
+    name: '20260612_add_title_emphasis',
   },
 ];

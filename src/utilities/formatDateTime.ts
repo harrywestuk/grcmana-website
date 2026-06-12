@@ -18,3 +18,8 @@ export const formatDateTime = (timestamp: string): string => {
 
   return `${MM}/${DD}/${YYYY}`
 }
+
+export const formatDateHuman = (timestamp: string): string => {
+  const date = timestamp ? new Date(timestamp) : new Date()
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
