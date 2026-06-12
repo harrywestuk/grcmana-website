@@ -35,16 +35,18 @@ export function ArticleToc({ toc }: Props): React.ReactElement | null {
     return () => observer.disconnect()
   }, [])
 
-  if (!toc.length) return null
+  const h2Entries = toc.filter((e) => e.level === 'h2')
+
+  if (!h2Entries.length) return null
 
   return (
     <nav aria-label="Table of contents">
       <span className="eyebrow mb-4">Contents</span>
       <ol>
-        {toc.map((entry) => {
+        {h2Entries.map((entry) => {
           if (!entry.anchor || !entry.text) return null
           return (
-            <li key={entry.anchor} style={entry.level === 'h3' ? { paddingLeft: '12px' } : {}}>
+            <li key={entry.anchor}>
               <a
                 href={`#${entry.anchor}`}
                 className={[
