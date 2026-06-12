@@ -49,6 +49,9 @@
   --font-sans:    var(--font-syne);
   --font-mono:    var(--font-dm-mono);
 
+  /* ---- Type scale extension ---- */
+  --font-size-2xs: 9px;
+
   /* ---- Ink ramp ---- */
   --color-ink-950: var(--ink-950);
   --color-ink-900: var(--ink-900);

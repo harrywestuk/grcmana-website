@@ -252,6 +252,60 @@ export const Articles: CollectionConfig<'articles'> = {
             }),
           ],
         },
+        {
+          label: 'AIO Snippet',
+          fields: [
+            {
+              name: 'aioSnippet',
+              type: 'group',
+              label: false,
+              fields: [
+                {
+                  name: 'heading',
+                  type: 'text',
+                  defaultValue: 'Key Takeaways',
+                  admin: {
+                    description: 'Label shown above the snippet. Defaults to "Key Takeaways".',
+                  },
+                },
+                {
+                  name: 'summary',
+                  type: 'richText',
+                  editor: lexicalEditor({
+                    features: ({ rootFeatures }) => [
+                      ...rootFeatures,
+                      FixedToolbarFeature(),
+                      InlineToolbarFeature(),
+                    ],
+                  }),
+                  admin: {
+                    description: 'Short summary (2–3 sentences). Bold text is supported.',
+                  },
+                },
+                {
+                  name: 'facts',
+                  type: 'array',
+                  maxRows: 4,
+                  admin: {
+                    description: 'Up to 4 key facts shown in the 2×2 grid.',
+                  },
+                  fields: [
+                    {
+                      name: 'term',
+                      type: 'text',
+                      required: true,
+                    },
+                    {
+                      name: 'definition',
+                      type: 'text',
+                      required: true,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     {

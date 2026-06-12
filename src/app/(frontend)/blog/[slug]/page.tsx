@@ -10,6 +10,7 @@ import RichText from '@/components/RichText'
 
 import type { Article } from '@/payload-types'
 
+import { AioSnippet } from '@/components/AioSnippet'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
@@ -62,6 +63,7 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
+          <AioSnippet data={article.aioSnippet} />
           <RichText className="max-w-[48rem] mx-auto" data={article.content} enableGutter={false} />
           {article.relatedArticles && article.relatedArticles.length > 0 && (
             <RelatedPosts

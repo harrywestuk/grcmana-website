@@ -205,6 +205,40 @@ export interface Article {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  aioSnippet?: {
+    /**
+     * Label shown above the snippet. Defaults to "Key Takeaways".
+     */
+    heading?: string | null;
+    /**
+     * Short summary (2–3 sentences). Bold text is supported.
+     */
+    summary?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Up to 4 key facts shown in the 2×2 grid.
+     */
+    facts?:
+      | {
+          term: string;
+          definition: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
   /**
    * Max 150 characters. Used on cards and as meta description fallback.
    */
@@ -1596,6 +1630,19 @@ export interface ArticlesSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
+      };
+  aioSnippet?:
+    | T
+    | {
+        heading?: T;
+        summary?: T;
+        facts?:
+          | T
+          | {
+              term?: T;
+              definition?: T;
+              id?: T;
+            };
       };
   excerpt?: T;
   publishedAt?: T;
