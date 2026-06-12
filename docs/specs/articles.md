@@ -289,6 +289,8 @@ Position: absolute, inset: 0, pointer-events: none
 
 ### C-05 Sticky TOC
 
+**STATUS:** `IN PROGRESS`
+
 **New. Article page only.**
 
 Positioned in the left column of the article grid. Sticks to `top: 88px` (60px nav + 28px breathing room) as the user scrolls through the article.
@@ -363,6 +365,8 @@ Border-radius: 0
 ---
 
 ### C-06 AIO Snippet
+
+**STATUS:** `COMPLETE`
 
 **New. Article block type in CMS.**
 
