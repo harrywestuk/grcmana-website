@@ -28,7 +28,7 @@ Implement a distraction-free, highly scannable, and typographically dominant art
 
 #### Layer 1: Context Navigation Eyebrow (Top Placement)
 
-* **Role:** Orients the user structurally within platform hubs (e.g., Blog or Vault spaces)[cite: 11, 13].
+* **Role:** Orients the user structurally within platform hubs (e.g., Blog or Vault spaces).
 * **Typography:** `font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase;`[cite: 9, 14].
 * **Color System:** All text tokens map to `--ink-200`[cite: 14]. Visual split tokens render explicitly as an un-spaced `>` character mapped to `--ink-300` to maintain baseline weight harmony[cite: 14].
 * **Bottom Layout Margin:** Enforces a rigid spacing threshold of `margin-bottom: 24px`[cite: 13].
