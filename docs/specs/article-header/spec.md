@@ -6,7 +6,7 @@ status: approved-production
 
 # Article Header Component (C-04) — Centered Editorial Stack
 
-> **Source mockup verification:** `image_790a3c.png`
+> **Mockup:** `/docs/specs/article-header/mockup.html`
 > **Upstream framework dependencies:** Next.js · PayloadCMS[cite: 9]
 > **Version:** 3.0 · June 2026[cite: 9]
 
