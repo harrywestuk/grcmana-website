@@ -1,16 +1,15 @@
 import type { Metadata } from 'next'
 
-import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import React, { cache } from 'react'
+import { cache } from 'react'
 import RichText from '@/components/RichText'
 
-import type { Article } from '@/payload-types'
-
 import { AioSnippet } from '@/components/AioSnippet'
+import { ArticleFooter } from '@/components/ArticleFooter'
+import { ArticleToc } from '@/components/ArticleToc'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
@@ -51,6 +50,8 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
 
   if (!article) return <PayloadRedirects url={url} />
 
+  const toc = article.toc ?? []
+
   return (
     <article className="pt-16 pb-16">
       <PageClient />
@@ -61,21 +62,25 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
 
       <PostHero post={article} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container">
-          <AioSnippet data={article.aioSnippet} />
-          <RichText className="max-w-[48rem] mx-auto" data={article.content} enableGutter={false} />
-          {article.relatedArticles && article.relatedArticles.length > 0 && (
-            <RelatedPosts
-              className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-              docs={article.relatedArticles.filter(
-                (a): a is Article => typeof a === 'object',
-              )}
-              relationTo="articles"
-            />
-          )}
+      <main className="article-layout pt-12">
+        <div className="article-layout__inner">
+          <aside className="toc-sidebar">
+            <ArticleToc toc={toc} />
+          </aside>
+
+          <section className="article-body-canvas article-body">
+            <AioSnippet data={article.aioSnippet} />
+            <RichText data={article.content} enableGutter={false} addHeadingIds />
+          </section>
         </div>
-      </div>
+      </main>
+
+      <footer className="article-layout article-footer-layout">
+        <div className="article-layout__inner">
+          <div className="article-footer__placeholder" aria-hidden="true" />
+          <ArticleFooter article={article} />
+        </div>
+      </footer>
     </article>
   )
 }

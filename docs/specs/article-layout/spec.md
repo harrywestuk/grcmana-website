@@ -1,3 +1,9 @@
+---
+feature: article-layout
+branch: feat/article-layout
+status: ready
+---
+
 # Article Two Column Layout — Implementation Specification
 
 > **Source mockup:** `/docs/specs/article-layout/mockup.html`
