@@ -569,6 +569,74 @@ body.cursor-hover .c-ring {
 }
 
 /* ============================================
+   C-11 AUTHOR BIO CARD
+   ============================================ */
+.author-bio {
+  background: var(--ink-800);
+  border: 1px solid var(--border);
+  padding: 28px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.author-bio__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--ink-700);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.author-bio__initials {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--signal-500);
+  line-height: 1;
+}
+
+.author-bio__content {
+  flex: 1;
+}
+
+.author-bio__eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  margin-bottom: 4px;
+}
+
+.author-bio__name {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.author-bio__copy {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  color: var(--ink-300);
+  line-height: 1.6;
+}
+
+@media (max-width: 550px) {
+  .author-bio {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+/* ============================================
    BASE LAYER
    ============================================ */
 @layer base {
