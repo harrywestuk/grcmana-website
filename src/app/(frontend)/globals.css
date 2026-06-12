@@ -443,8 +443,10 @@
 /* ============================================
    CUSTOM CURSOR
    ============================================ */
-html {
-  cursor: none;
+@media (pointer: fine) {
+  html {
+    cursor: none;
+  }
 }
 
 .c-dot {
