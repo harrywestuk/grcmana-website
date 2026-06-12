@@ -10,10 +10,13 @@ export const CustomCursor: React.FC = () => {
   const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     const onMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY }
       if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
+        dotRef.current.style.left = `${e.clientX}px`
+        dotRef.current.style.top = `${e.clientY}px`
       }
     }
 
@@ -25,13 +28,14 @@ export const CustomCursor: React.FC = () => {
       ringPos.current.x += (mousePos.current.x - ringPos.current.x) * lerp
       ringPos.current.y += (mousePos.current.y - ringPos.current.y) * lerp
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ringPos.current.x}px, ${ringPos.current.y}px)`
+        ringRef.current.style.left = `${ringPos.current.x}px`
+        ringRef.current.style.top = `${ringPos.current.y}px`
       }
       rafRef.current = requestAnimationFrame(animate)
     }
 
     const interactiveSelector =
-      'a, button, [role="button"], input, select, textarea, label[for]'
+      'a, button, [role="button"], input, select, textarea, label[for], .article-card'
     const bindHover = () => {
       document.querySelectorAll<HTMLElement>(interactiveSelector).forEach((el) => {
         el.addEventListener('mouseenter', onEnter)
