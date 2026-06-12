@@ -9,8 +9,8 @@ import RichText from '@/components/RichText'
 
 import { AioSnippet } from '@/components/AioSnippet'
 import { ArticleFooter } from '@/components/ArticleFooter'
+import { ArticleHeader } from '@/components/ArticleHeader'
 import { ArticleToc } from '@/components/ArticleToc'
-import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
@@ -54,7 +54,7 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
   const toc = article.toc ?? []
 
   return (
-    <article className="pt-16 pb-16">
+    <article>
       <PageClient />
       <ReadingProgressBar />
 
@@ -62,7 +62,7 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <PostHero post={article} />
+      <ArticleHeader article={article} />
 
       <main className="article-layout pt-12">
         <div className="article-layout__inner">

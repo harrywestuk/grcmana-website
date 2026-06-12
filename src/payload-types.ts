@@ -161,7 +161,14 @@ export interface UserAuthOperations {
  */
 export interface Article {
   id: number;
+  /**
+   * Enter the full SEO title of the article.
+   */
   title: string;
+  /**
+   * Enter the title text that you want to emphasise.
+   */
+  titleEmphasis?: string | null;
   heroImage?: (number | null) | Media;
   heroImageAlt?: string | null;
   heroStyle?: ('image' | 'gradient' | 'minimal') | null;
@@ -1609,6 +1616,7 @@ export interface PayloadMigration {
  */
 export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
+  titleEmphasis?: T;
   heroImage?: T;
   heroImageAlt?: T;
   heroStyle?: T;
