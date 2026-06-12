@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vercel-Inspired Matrix Index Sandbox — GRCMANA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM TOKENS (LOCKED TO GRCMANA SPEC)
+   ============================================================ */
+:root {
+  --ink-950: #07080a; --ink-900: #0a0b0d; --ink-800: #111215;
+  --ink-700: #1a1c20; --ink-600: #252830; --ink-500: #363a44;
+  --ink-400: #4d5260; --ink-300: #6b7280; --ink-200: #9ca3af;
+  --ink-100: #d1d5db; --white: #ffffff; --signal-500: #e8ff47;
+  --border: rgba(255,255,255,0.06); --border-hover: rgba(255,255,255,0.12);
+  --container-max: 1200px;
+  --dur-fast: 150ms; --dur-base: 250ms; --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--ink-900); color: var(--white);
+  font-family: 'Syne', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  padding-block: 120px;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   INTRO HEADER
+   ============================================================ */
+.matrix-intro {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 32px;
+  margin-bottom: 48px;
+}
+.matrix-intro__label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-400); margin-bottom: 12px; display: block;
+}
+.matrix-intro__title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 56px; font-weight: 400; letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   GRCMANA HIGH-TRUST FILTER & SEARCH UTILITY BAR
+   ============================================================ */
+.matrix-toolbar {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 32px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .matrix-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+
+/* Left: Filter Navigation Rails */
+.matrix-filters {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.matrix-filter-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  background: transparent;
+  border: none;
+  padding-block: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.matrix-filter-btn:hover {
+  color: var(--white);
+}
+
+.matrix-filter-btn--active {
+  color: var(--white);
+}
+
+/* Underline marker replacing Vercel's organic pill shape background */
+.matrix-filter-btn--active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--signal-500);
+}
+
+/* Right: Search + RSS Panel Controls */
+.matrix-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .matrix-actions { width: 100%; }
+}
+
+.matrix-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .matrix-search { flex-grow: 1; }
+}
+
+.matrix-search__icon {
+  position: absolute;
+  left: 14px;
+  pointer-events: none;
+  color: var(--ink-400);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.matrix-search__input {
+  background: var(--ink-950);
+  border: 1px solid var(--border);
+  border-radius: 0; /* Strictly sharp edges to protect brand spec */
+  padding: 10px 16px 10px 38px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--white);
+  width: 240px;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.matrix-search__input::placeholder {
+  color: var(--ink-400);
+}
+
+.matrix-search__input:focus {
+  outline: none;
+  border-color: var(--signal-500);
+  box-shadow: 0 0 20px rgba(232, 255, 71, 0.05);
+}
+
+.matrix-search__input:focus + .matrix-search__icon {
+  color: var(--signal-500);
+}
+
+/* Clean, technical implementation of RSS feed token */
+.matrix-rss-btn {
+  background: var(--ink-950);
+  border: 1px solid var(--border);
+  color: var(--ink-300);
+  width: 38px; height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.matrix-rss-btn:hover {
+  color: var(--white);
+  border-color: var(--border-hover);
+  background: var(--ink-800);
+}
+
+/* ============================================================
+   THE COLUMN MATRIX SYSTEM
+   ============================================================ */
+.matrix-grid {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-left: 1px dashed var(--border);
+  border-right: 1px dashed var(--border);
+}
+
+@media (max-width: 1024px) {
+  .matrix-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 730px) {
+  .matrix-grid { grid-template-columns: 1fr; border-right: none; }
+}
+
+.matrix-item {
+  padding: 48px 32px 64px 32px;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  transition: background-color var(--dur-base) var(--ease-out);
+}
+
+.matrix-item:not(:nth-child(3n)) {
+  border-right: 1px dashed var(--border);
+}
+
+@media (max-width: 1024px) {
+  .matrix-item:not(:nth-child(3n)) { border-right: none; }
+  .matrix-item:not(:nth-child(2n)) { border-right: 1px dashed var(--border); }
+}
+@media (max-width: 730px) {
+  .matrix-item { border-right: none !important; padding-inline: 20px; }
+}
+
+.matrix-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.matrix-item__cat { color: var(--ink-300); }
+.matrix-item__date { color: var(--ink-400); }
+
+.matrix-item__title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 26px; font-weight: 400; line-height: 1.25;
+  color: var(--white); margin-bottom: 16px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.matrix-item__excerpt {
+  font-family: 'Syne', system-ui, sans-serif;
+  font-size: 14.5px; line-height: 1.65; color: var(--ink-300);
+  margin-bottom: 32px; flex-grow: 1;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.matrix-item__footer {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-400);
+}
+.matrix-item__author { font-family: 'Syne', sans-serif; font-weight: 600; color: var(--ink-200); text-transform: none; letter-spacing: normal; }
+
+.matrix-item:hover { background-color: rgba(255, 255, 255, 0.01); }
+.matrix-item:hover .matrix-item__title { color: var(--signal-500); }
+.matrix-item:hover .matrix-item__cat { color: var(--white); }
+</style>
+</head>
+<body>
+
+  <!-- MASTER INTRO SECTION -->
+  <header class="matrix-intro">
+    <span class="matrix-intro__label">Knowledge Matrix</span>
+    <h1 class="matrix-intro__title">Latest Insights.</h1>
+  </header>
+
+  <!-- REFINED FILTER & SEARCH UTILITY BAR -->
+  <div class="matrix-toolbar">
+    
+    <!-- Left: Category Selectors -->
+    <ul class="matrix-filters">
+      <li><button class="matrix-filter-btn matrix-filter-btn--active">All Posts</button></li>
+      <li><button class="matrix-filter-btn">Cybersecurity</button></li>
+      <li><button class="matrix-filter-btn">Compliance</button></li>
+      <li><button class="matrix-filter-btn">AI Governance</button></li>
+      <li><button class="matrix-filter-btn">Changelog</button></li>
+    </ul>
+
+    <!-- Right: Inputs and Feeds -->
+    <div class="matrix-actions">
+      <div class="matrix-search">
+        <input type="text" class="matrix-search__input" placeholder="Search insights...">
+        <!-- SVG magnifying glass vector configured tightly inside the mono grid -->
+        <svg class="matrix-search__icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
+      
+      <!-- Monospace RSS Node Block -->
+      <button class="matrix-rss-btn" title="RSS Feed">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- VERCEL-STYLE COLUMN MATRIX GRID -->
+  <div class="matrix-grid">
+
+    <!-- Post Component 1 -->
+    <a href="#" class="matrix-item">
+      <div class="matrix-item__header">
+        <span class="matrix-item__cat">Cybersecurity</span>
+        <span class="matrix-item__date">Jun 8</span>
+      </div>
+      <h2 class="matrix-item__title">Protecting against <em>token theft</em> inside the cloud</h2>
+      <p class="matrix-item__excerpt">HTTP requests are inexpensive. Malicious actors leverage rapid orchestration schemes to intercept ephemeral handshake protocols before your engineering logs register anomalous traffic footprints.</p>
+      <div class="matrix-item__footer">
+        <span>By</span><span class="matrix-item__author">Harry West</span><span>·</span><span>7 min read</span>
+      </div>
+    </a>
+
+    <!-- Post Component 2 -->
+    <a href="#" class="matrix-item">
+      <div class="matrix-item__header">
+        <span class="matrix-item__cat">Compliance</span>
+        <span class="matrix-item__date">May 24</span>
+      </div>
+      <h2 class="matrix-item__title">Making enterprise readiness <em>96% faster</em> with frameworks</h2>
+      <p class="matrix-item__excerpt">ISO 27001 scopes are historically slow to build. By optimizing policy package injection and targeting core hosting containers rather than corporate machines, procurement blockages dry up overnight.</p>
+      <div class="matrix-item__footer">
+        <span>By</span><span class="matrix-item__author">Harry West</span><span>·</span><span>10 min read</span>
+      </div>
+    </a>
+
+    <!-- Post Component 3 -->
+    <a href="#" class="matrix-item">
+      <div class="matrix-item__header">
+        <span class="matrix-item__cat">AI Governance</span>
+        <span class="matrix-item__date">May 12</span>
+      </div>
+      <h2 class="matrix-item__title">Build knowledge agents <em>without</em> embeddings bloat</h2>
+      <p class="matrix-item__excerpt">Most risk governance frameworks focus on the data warehousing layer. Real security validation demands audit logging right at the operational ingestion vector where user prompting loops occur.</p>
+      <div class="matrix-item__footer">
+        <span>By</span><span class="matrix-item__author">Harry West</span><span>·</span><span>6 min read</span>
+      </div>
+    </a>
+
+  </div>
+
+</body>
+</html>
