@@ -31,12 +31,13 @@
    RESET
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; cursor: none; }
+html { scroll-behavior: smooth; }
+@media (pointer: fine) { html { cursor: none; } }
 body {
   background: var(--ink-900); color: var(--white);
   font-family: 'Syne', system-ui, sans-serif;
   font-size: 15px; line-height: 1.65;
-  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased; overflow-x: clip;
 }
 a { color: inherit; text-decoration: none; }
 ul, ol { list-style: none; }
@@ -48,14 +49,17 @@ ul, ol { list-style: none; }
   position: fixed; pointer-events: none; z-index: 9999;
   width: 8px; height: 8px; border-radius: 50%; background: var(--signal-500);
   transform: translate(-50%,-50%);
-  transition: width var(--dur-base) var(--ease-out), height var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition: width var(--dur-base) var(--ease-out),
+              height var(--dur-base) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
 }
 .c-ring {
   position: fixed; pointer-events: none; z-index: 9998;
   width: 32px; height: 32px; border-radius: 50%;
   border: 1.5px solid rgba(232,255,71,0.45);
   transform: translate(-50%,-50%);
-  transition: width var(--dur-base) var(--ease-out), height var(--dur-base) var(--ease-out);
+  transition: width var(--dur-base) var(--ease-out),
+              height var(--dur-base) var(--ease-out);
 }
 body.hovering .c-dot { transform: translate(-50%,-50%) scale(2); }
 body.hovering .c-ring { width: 48px; height: 48px; }
@@ -112,18 +116,17 @@ body.hovering .c-ring { width: 48px; height: 48px; }
 .btn--md { padding: 10px 20px; }
 .btn--lg { font-size: 12px; padding: 16px 32px; }
 .btn--primary { background: var(--signal-500); color: var(--ink-900); padding: 10px 20px; }
-.btn--primary:hover { background: var(--signal-400); transform: translateY(-2px); box-shadow: 0 0 40px rgba(232,255,71,0.12); }
+.btn--primary:hover { background: var(--signal-400); transform: translateY(-1px); box-shadow: 0 0 40px rgba(232,255,71,0.12); }
 .btn--ghost { background: transparent; color: var(--ink-200); border: 1px solid var(--border); padding: 10px 20px; }
 .btn--ghost:hover { color: var(--white); border-color: var(--border-hover); }
 .cta-pair { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 
 /* ============================================================
-   ARTICLE HEADER
+   C-04 ARTICLE HEADER (CENTERED STACK ARCHITECTURE)
    ============================================================ */
 .article-header {
-  padding-top: calc(var(--section-y-hero) + 60px);
-  padding-bottom: 0;
-  padding-inline: var(--gutter);
+  padding-top: calc(var(--section-y-hero) + 60px); /* Strict clearance for global nav offset */
+  padding-bottom: 24px; padding-inline: var(--gutter);
   position: relative; overflow: hidden;
 }
 .article-header__glow {
@@ -135,91 +138,49 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   margin-inline: auto; text-align: center;
 }
 
-/* Breadcrumb */
-.breadcrumb {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-bottom: 24px;
+/* Clean Context Navigation Eyebrow */
+.breadcrumb-eyebrow { 
+  display: flex; align-items: center; justify-content: center; gap: 8px; 
+  margin-bottom: 24px; 
 }
-.breadcrumb__item {
+.breadcrumb-eyebrow__item {
   font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-400);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-200); /* Matched to metadata alignment directives */
   transition: color var(--dur-fast) var(--ease-out);
 }
-.breadcrumb__item:hover { color: var(--ink-200); }
-.breadcrumb__sep { color: var(--ink-600); font-size: 10px; }
-.breadcrumb__item--active { color: var(--ink-300); }
+.breadcrumb-eyebrow__item:hover { color: var(--white); }
+.breadcrumb-eyebrow__sep { color: var(--ink-300); font-size: 9px; font-weight: 400; }
 
-/* Category + meta tags row */
-.article-header__tags {
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-bottom: 20px;
-}
-.a-tag {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 4px 10px; border: 1px solid var(--border); color: var(--ink-300);
-}
-.a-tag--category { border-color: rgba(232,255,71,0.25); color: var(--signal-500); }
-.a-tag--vault { border-color: rgba(6,182,212,0.25); color: var(--info); }
-
-/* Title */
+/* Dynamic Editorial Headline */
 .article-header__title {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: clamp(36px, 5vw, 60px);
+  font-size: clamp(38px, 5.5vw, 64px);
   line-height: 1.05; letter-spacing: -0.025em; font-weight: 400;
-  color: var(--white); margin-bottom: 28px;
+  color: var(--white); margin-bottom: 36px;
 }
 .article-header__title em { font-style: italic; color: var(--signal-500); }
 
-/* Deck / subtitle */
-.article-header__deck {
-  font-family: 'Syne', sans-serif; font-size: 17px; line-height: 1.65;
-  color: var(--ink-200); max-width: 580px; margin: 0 auto 36px;
-}
-
-/* Author row */
-.article-header__author {
-  display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 36px;
-}
-.author-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--ink-700); border: 1px solid var(--border);
+/* Flat Metadata Anchor Row */
+.article-header__clean-meta {
   display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
-  color: var(--signal-500); flex-shrink: 0;
-}
-.author-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); }
-.author-role { font-family: 'Syne', sans-serif; font-size: 13px; color: var(--ink-300); }
-
-/* Meta bar */
-.article-header__meta {
-  display: flex; align-items: center; justify-content: center; gap: 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  margin-top: 0; padding-block: 14px;
-}
-.meta-item {
   font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-400);
-  display: flex; align-items: center; gap: 6px;
-  padding-inline: 20px;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-300);
 }
-.meta-item + .meta-item { border-left: 1px solid var(--border); }
-.meta-item__dot {
-  width: 4px; height: 4px; border-radius: 50%; background: var(--ink-500); flex-shrink: 0;
+.article-header__clean-meta .author-name {
+  font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white);
+  text-transform: none; letter-spacing: normal;
 }
-.meta-item--share { color: var(--ink-200); transition: color var(--dur-fast) var(--ease-out); }
-.meta-item--share:hover { color: var(--signal-500); }
+.article-header__clean-meta .separator { color: var(--ink-600); margin-inline: 8px; }
 
 /* ============================================================
-   ARTICLE BODY WRAPPER  — two-column grid: article + sticky TOC
+   ARTICLE BODY WRAPPER  — two-column grid: TOC left, article right
    ============================================================ */
 .article-layout {
   padding-block: var(--section-y);
   padding-inline: var(--gutter);
 }
 .article-layout__inner {
-  /* 720px article + 64px gap + 220px TOC = 1004px, fits in 1200px container */
   max-width: 1060px;
   margin-inline: auto;
   display: grid;
@@ -233,65 +194,87 @@ body.hovering .c-ring { width: 48px; height: 48px; }
     max-width: var(--container-narrow);
   }
   .article-toc { display: none !important; }
+  .article-footer__placeholder { display: none !important; }
 }
 
 /* ============================================================
    ARTICLE TOC
    ============================================================ */
-.article-toc {
-  position: sticky;
-  top: 88px; /* 60px nav + 28px breathing room */
-}
+.article-toc { position: sticky; top: 88px; }
 .toc__label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; font-weight: 400;
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
   letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--ink-500);
-  padding-bottom: 12px;
-  margin-bottom: 4px;
+  color: var(--ink-300);
+  padding-bottom: 12px; margin-bottom: 4px;
   border-bottom: 1px solid var(--border);
 }
-.toc__nav {
-  display: flex; flex-direction: column;
-  border-left: 1px solid var(--border);
-  margin-top: 4px;
-}
+.toc__nav { display: flex; flex-direction: column; border-left: 1px solid var(--border); margin-top: 4px; }
 .toc__item {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px; font-weight: 400;
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 400;
   letter-spacing: 0.04em;
-  color: var(--ink-400);
+  color: var(--ink-300);
   padding: 9px 8px 9px 14px;
-  border-left: 2px solid transparent;
-  margin-left: -1px;
-  line-height: 1.45;
-  display: block;
-  transition: color var(--dur-fast) var(--ease-out),
-              border-color var(--dur-fast) var(--ease-out);
+  border-left: 2px solid transparent; margin-left: -1px;
+  line-height: 1.45; display: block;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
-.toc__item:hover {
-  color: var(--ink-100);
-  border-left-color: var(--border-hover);
-}
-.toc__item--active {
-  color: var(--signal-500);
-  border-left-color: var(--signal-500);
-}
-.toc__divider {
-  height: 1px; background: var(--border);
-  margin: 20px 0 16px;
-}
+.toc__item:hover { color: var(--ink-100); border-left-color: var(--border-hover); }
+.toc__item--active { color: var(--signal-500); border-left-color: var(--signal-500); }
+.toc__divider { height: 1px; background: var(--border); margin: 20px 0 16px; }
 .toc__cta {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px; font-weight: 500;
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
   letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-900);
-  background: var(--signal-500);
+  color: var(--ink-900); background: var(--signal-500);
   padding: 9px 14px;
   display: flex; align-items: center; justify-content: space-between;
   transition: background var(--dur-fast) var(--ease-out);
 }
 .toc__cta:hover { background: var(--signal-400); }
+
+/* ============================================================
+   AIO SNIPPET  — AI/LLM Knowledge Abstract
+   ============================================================ */
+.aio-snippet {
+  background: var(--signal-a06);
+  border: 1px solid rgba(232,255,71,0.15);
+  padding: 24px; margin-bottom: 40px;
+}
+.aio-snippet__header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px; margin-bottom: 16px;
+}
+.aio-snippet__label {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--signal-500);
+}
+.aio-snippet__engine {
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  color: var(--ink-300);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.aio-snippet__core {
+  font-family: 'Syne', sans-serif; font-size: 14.5px; line-height: 1.6;
+  color: var(--ink-100); margin-bottom: 16px;
+}
+.aio-snippet__core strong { color: var(--white); }
+.aio-snippet__bullets { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .aio-snippet__bullets { grid-template-columns: 1fr; } }
+.aio-fact {
+  display: flex; flex-direction: column;
+  background: var(--ink-950); border: 1px solid var(--border);
+  padding: 12px 16px;
+}
+.aio-fact__term {
+  font-family: 'DM Mono', monospace; font-size: 8.5px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-300);
+  margin-bottom: 2px;
+}
+.aio-fact__def {
+  font-family: 'Syne', sans-serif; font-size: 13px;
+  font-weight: 600; color: var(--ink-100);
+}
 
 /* ============================================================
    ARTICLE TYPOGRAPHY
@@ -308,12 +291,9 @@ body.hovering .c-ring { width: 48px; height: 48px; }
 /* Body paragraphs */
 .article-body p {
   font-family: 'Syne', sans-serif;
-  font-size: 16px; line-height: 1.8; color: var(--ink-200);
-  margin-bottom: 24px;
+  font-size: 16px; line-height: 1.8; color: var(--ink-200); margin-bottom: 24px;
 }
-.article-body p strong {
-  font-weight: 700; color: var(--ink-100);
-}
+.article-body p strong { font-weight: 700; color: var(--ink-100); }
 .article-body p a {
   color: var(--signal-500); border-bottom: 1px solid rgba(232,255,71,0.3);
   transition: border-color var(--dur-fast) var(--ease-out);
@@ -328,104 +308,62 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   padding-top: 64px; border-top: 1px solid var(--border);
 }
 .article-body h2 em { font-style: italic; color: var(--signal-500); }
-
 .article-body h3 {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px; font-weight: 700; color: var(--white);
-  margin-top: 40px; margin-bottom: 14px;
+  font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+  color: var(--white); margin-top: 40px; margin-bottom: 14px;
 }
 
 /* Lists */
-.article-body ul, .article-body ol {
-  margin-bottom: 24px; padding-left: 0;
-}
+.article-body ul, .article-body ol { margin-bottom: 24px; padding-left: 0; }
 .article-body li {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px; line-height: 1.7; color: var(--ink-200);
-  padding: 8px 0 8px 20px; position: relative;
-  border-bottom: 1px solid var(--border);
+  font-family: 'Syne', sans-serif; font-size: 16px; line-height: 1.7; color: var(--ink-200);
+  padding: 8px 0 8px 20px; position: relative; border-bottom: 1px solid var(--border);
 }
 .article-body li:first-child { border-top: 1px solid var(--border); }
 .article-body li::before {
-  content: ''; position: absolute; left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 4px; height: 4px; border-radius: 50%;
-  background: var(--ink-500);
+  content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 4px; border-radius: 50%; background: var(--ink-500);
 }
 
 /* Pull quote */
-.pull-quote {
-  margin: 48px 0; padding: 28px 32px;
-  border-left: 3px solid var(--signal-500);
-  background: var(--signal-a06);
-}
-.pull-quote__text {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-style: italic; font-size: 22px; line-height: 1.4;
-  color: var(--white);
-}
+.pull-quote { margin: 48px 0; padding: 28px 32px; border-left: 3px solid var(--signal-500); background: var(--signal-a06); }
+.pull-quote__text { font-family: 'DM Serif Display', Georgia, serif; font-style: italic; font-size: 22px; line-height: 1.4; color: var(--white); }
 
 /* Inline stat callout */
-.stat-callout {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border);
-  margin: 48px 0;
-}
-.stat-item {
-  background: var(--ink-800); padding: 28px 24px;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.stat-item__value {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 40px; line-height: 1.0; color: var(--signal-500);
-}
-.stat-item__label {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-400);
-}
+.stat-callout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin: 48px 0; }
+.stat-item { background: var(--ink-800); padding: 28px 24px; display: flex; flex-direction: column; gap: 4px; }
+.stat-item__value { font-family: 'DM Serif Display', Georgia, serif; font-size: 40px; line-height: 1.0; color: var(--signal-500); }
+.stat-item__label { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300); }
 
 /* Code / policy snippet */
-.code-block {
-  background: var(--ink-950); border: 1px solid var(--border);
-  margin: 32px 0; overflow-x: auto;
-}
+.code-block { background: var(--ink-950); border: 1px solid var(--border); margin: 32px 0; overflow-x: auto; }
 .code-block__header {
   background: var(--ink-800); padding: 10px 16px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border);
 }
-.code-block__label {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-400);
-}
-.code-block__lang {
-  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--signal-500);
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-.code-block pre {
-  padding: 20px; font-family: 'DM Mono', monospace; font-size: 13px;
-  line-height: 1.6; color: var(--ink-200); overflow-x: auto;
-}
-.code-block pre .k { color: var(--signal-500); } /* keyword */
-.code-block pre .s { color: var(--success); }    /* string */
-.code-block pre .c { color: var(--ink-400); }    /* comment */
+.code-block__label { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300); }
+.code-block__lang { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--signal-500); letter-spacing: 0.08em; text-transform: uppercase; }
+.code-block pre { padding: 20px; font-family: 'DM Mono', monospace; font-size: 13px; line-height: 1.6; color: var(--ink-200); overflow-x: auto; }
+.code-block pre .k { color: var(--signal-500); }
+.code-block pre .s { color: var(--success); }
+.code-block pre .c { color: var(--ink-400); }
 
 /* ============================================================
-   ARTICLE FOOTER
+   ARTICLE FOOTER  — aligned to grid right column
    ============================================================ */
 .article-footer {
   padding-inline: var(--gutter);
   padding-bottom: var(--section-y);
 }
-.article-footer__inner {
-  max-width: var(--container-narrow); margin-inline: auto;
-  border-top: 1px solid var(--border); padding-top: 40px;
+.article-footer__placeholder { }
+.article-footer__content {
+  border-top: 1px solid var(--border);
+  padding-top: 40px;
 }
 
 /* Tags */
-.article-footer__tags {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
-}
+.article-footer__tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
 .footer-tag {
   font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
   letter-spacing: 0.1em; text-transform: uppercase;
@@ -435,14 +373,8 @@ body.hovering .c-ring { width: 48px; height: 48px; }
 .footer-tag:hover { border-color: var(--border-hover); color: var(--white); }
 
 /* Share row */
-.article-footer__share {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 40px;
-}
-.share-label {
-  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-500);
-  margin-right: 4px;
-}
+.article-footer__share { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+.share-label { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300); margin-right: 4px; }
 .share-btn {
   font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300);
@@ -452,10 +384,7 @@ body.hovering .c-ring { width: 48px; height: 48px; }
 .share-btn:hover { color: var(--white); border-color: var(--border-hover); }
 
 /* Author bio */
-.author-bio {
-  background: var(--ink-800); border: 1px solid var(--border);
-  padding: 28px; display: flex; gap: 20px; align-items: flex-start;
-}
+.author-bio { background: var(--ink-800); border: 1px solid var(--border); padding: 28px; display: flex; gap: 20px; align-items: flex-start; }
 .author-bio__avatar {
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--ink-700); border: 1px solid var(--border);
@@ -463,96 +392,46 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500;
   color: var(--signal-500); flex-shrink: 0;
 }
-.author-bio__eyebrow {
-  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--ink-400); margin-bottom: 4px;
-}
+.author-bio__eyebrow { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-300); margin-bottom: 4px; }
 .author-bio__name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
 .author-bio__copy { font-family: 'Syne', sans-serif; font-size: 14px; color: var(--ink-300); line-height: 1.6; }
 
 /* ============================================================
    RELATED ARTICLES
    ============================================================ */
-.related {
-  padding-block: var(--section-y);
-  background: var(--ink-800);
-  border-top: 1px solid var(--border);
-}
-.related-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border); margin-top: 52px;
-}
+.related { padding-block: var(--section-y); background: var(--ink-800); border-top: 1px solid var(--border); }
+.related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-top: 52px; }
 .article-card {
-  background: var(--ink-800); padding: 36px;
-  display: flex; flex-direction: column;
-  border-top: 2px solid transparent;
-  transition: all var(--dur-base) var(--ease-out);
+  background: var(--ink-800); padding: 36px; display: flex; flex-direction: column;
+  border-top: 2px solid transparent; transition: all var(--dur-base) var(--ease-out);
 }
-.article-card:hover {
-  background: var(--ink-700); border-top-color: var(--signal-500);
-  transform: translateY(-2px);
-}
-.article-card__context {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
-}
+.article-card:hover { background: var(--ink-700); border-top-color: var(--signal-500); transform: translateY(-2px); }
+.article-card__context { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
 .article-card__cat {
   font-family: 'DM Mono', monospace; font-size: 8px; font-weight: 400;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--signal-500);
   border: 1px solid rgba(232,255,71,0.2); padding: 3px 8px;
 }
-.article-card__cat--vault {
-  color: var(--info); border-color: rgba(6,182,212,0.2);
-}
-.article-card__read {
-  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-500);
-}
-.article-card__title {
-  font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700;
-  color: var(--white); line-height: 1.3; margin-bottom: 12px; flex: 1;
-}
-.article-card__excerpt {
-  font-size: 13px; color: var(--ink-300); line-height: 1.6; margin-bottom: 24px;
-}
-.article-card__meta {
-  display: flex; align-items: center; justify-content: space-between;
-  border-top: 1px solid var(--border); padding-top: 14px;
-}
-.article-card__author {
-  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-400);
-}
-.article-card__date {
-  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-500);
-}
+.article-card__cat--vault { color: var(--info); border-color: rgba(6,182,212,0.2); }
+.article-card__read { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300); }
+.article-card__title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--white); line-height: 1.3; margin-bottom: 12px; flex: 1; }
+.article-card__excerpt { font-size: 13px; color: var(--ink-300); line-height: 1.6; margin-bottom: 24px; }
+.article-card__meta { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; }
+.article-card__author { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-300); }
+.article-card__date { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-300); }
 
-/* Section header (shared with homepage) */
+/* Section header */
 .s-header { margin-bottom: 0; }
-.s-header__h2 {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05;
-  letter-spacing: -0.02em; font-weight: 400; margin-bottom: var(--gap-base);
-}
+.s-header__h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 400; margin-bottom: var(--gap-base); }
 .s-header__h2 em { font-style: italic; color: var(--signal-500); }
 .s-header__body { font-size: 15px; color: var(--ink-200); max-width: 460px; line-height: 1.65; }
-.eyebrow {
-  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-400); display: block; margin-bottom: var(--gap-tight);
-}
+.eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300); display: block; margin-bottom: var(--gap-tight); }
 
 /* ============================================================
    CTA CLOSE
    ============================================================ */
-.cta-close {
-  padding-block: var(--section-y-hero); background: var(--ink-950);
-  border-top: 1px solid var(--border); text-align: center;
-}
-.cta-close__h2 {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: clamp(36px, 5vw, 64px); line-height: 1.0;
-  letter-spacing: -0.025em; font-weight: 400; margin-bottom: var(--gap-base);
-}
+.cta-close { padding-block: var(--section-y-hero); background: var(--ink-950); border-top: 1px solid var(--border); text-align: center; }
+.cta-close__h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(36px, 5vw, 64px); line-height: 1.0; letter-spacing: -0.025em; font-weight: 400; margin-bottom: var(--gap-base); }
 .cta-close__h2 em { font-style: italic; color: var(--signal-500); }
 .cta-close__body { font-size: 16px; color: var(--ink-200); max-width: 420px; margin: 0 auto var(--gap-loose); line-height: 1.65; }
 .cta-note { margin-top: 20px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-500); }
@@ -567,7 +446,7 @@ body.hovering .c-ring { width: 48px; height: 48px; }
 .footer__tagline { font-size: 13px; color: var(--ink-300); line-height: 1.6; margin-bottom: 18px; }
 .footer__certs { display: flex; flex-wrap: wrap; gap: 4px; }
 .cert { font-family: 'DM Mono', monospace; font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-500); padding: 3px 7px; border: 1px solid var(--border); }
-.footer__col-head { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-500); margin-bottom: 14px; }
+.footer__col-head { font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-300); margin-bottom: 14px; }
 .footer__links { display: flex; flex-direction: column; gap: 8px; }
 .footer__link { font-size: 13px; color: var(--ink-300); transition: color var(--dur-fast) var(--ease-out); }
 .footer__link:hover { color: var(--white); }
@@ -577,43 +456,26 @@ body.hovering .c-ring { width: 48px; height: 48px; }
 /* ============================================================
    CONTEXT TOGGLE  (demo: Blog vs Vault switcher)
    ============================================================ */
-.context-bar {
-  position: fixed; bottom: 24px; right: 24px; z-index: 500;
-  background: var(--ink-800); border: 1px solid var(--border);
-  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
-}
-.context-bar__label {
-  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-400);
-}
-.context-btn {
-  font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em;
-  text-transform: uppercase; padding: 5px 10px; border: 1px solid var(--border);
-  color: var(--ink-300); transition: all var(--dur-fast) var(--ease-out);
-}
+.context-bar { position: fixed; bottom: 24px; right: 24px; z-index: 500; background: var(--ink-800); border: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+.context-bar__label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-400); }
+.context-btn { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 10px; border: 1px solid var(--border); color: var(--ink-300); transition: all var(--dur-fast) var(--ease-out); }
 .context-btn.active { background: var(--ink-700); color: var(--white); border-color: var(--border-hover); }
 .context-btn:hover { color: var(--white); border-color: var(--border-hover); }
 </style>
 </head>
 <body>
 
-<!-- Cursor -->
 <div class="c-dot" id="cdot"></div>
 <div class="c-ring" id="cring"></div>
-
-<!-- Reading progress -->
 <div class="progress-bar" id="progress"></div>
 
-<!-- Context demo toggle -->
 <div class="context-bar">
   <span class="context-bar__label">Context</span>
   <button class="context-btn active" id="ctx-blog" onclick="setContext('blog')">Blog</button>
   <button class="context-btn" id="ctx-vault" onclick="setContext('vault')">Vault</button>
 </div>
 
-<!-- ============================================================
-     NAV
-     ============================================================ -->
+<!-- NAV -->
 <nav class="nav">
   <div class="container nav__inner">
     <a href="#" class="nav__logo">
@@ -634,81 +496,38 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   </div>
 </nav>
 
-<!-- ============================================================
-     ARTICLE HEADER
-     ============================================================ -->
+<!-- ARTICLE HERO HEADER -->
 <header class="article-header">
   <div class="article-header__glow"></div>
   <div class="article-header__inner">
 
-    <!-- Breadcrumb — swaps between Blog and Vault contexts -->
-    <nav class="breadcrumb reveal" id="breadcrumb-blog">
-      <a href="#" class="breadcrumb__item">Blog</a>
-      <span class="breadcrumb__sep">/</span>
-      <span class="breadcrumb__item breadcrumb__item--active">ISO 27001 & Enterprise Deals</span>
-    </nav>
-    <nav class="breadcrumb reveal" id="breadcrumb-vault" style="display:none;">
-      <a href="#" class="breadcrumb__item">Vault</a>
-      <span class="breadcrumb__sep">/</span>
-      <a href="#" class="breadcrumb__item">ISO 27001</a>
-      <span class="breadcrumb__sep">/</span>
-      <span class="breadcrumb__item breadcrumb__item--active">Enterprise Deals</span>
+    <!-- Balanced Navigation Eyebrow Stacked Directly Above Headline -->
+    <nav class="breadcrumb-eyebrow" id="breadcrumb-container">
+      <!-- Injected via JS Engine to handle user context state -->
     </nav>
 
-    <!-- Category tags -->
-    <div class="article-header__tags reveal">
-      <span class="a-tag a-tag--category" id="ctx-tag">Compliance</span>
-      <span class="a-tag">ISO 27001</span>
-      <span class="a-tag">Enterprise Sales</span>
-    </div>
-
-    <!-- Title -->
-    <h1 class="article-header__title reveal">
+    <!-- Headline Statement remains the focal champion -->
+    <h1 class="article-header__title">
       Why ISO 27001 Is the Fastest Way to<br><em>Close Enterprise Deals</em>
     </h1>
 
-    <!-- Deck -->
-    <p class="article-header__deck reveal">
-      73% of enterprise buyers require vendor security certification before a contract proceeds. Here's how to get certified in six weeks — and what it's worth when you do.
-    </p>
-
-    <!-- Author -->
-    <div class="article-header__author reveal">
-      <div class="author-avatar">HA</div>
-      <div>
-        <div class="author-name">Harry — Trust Architect</div>
-        <div class="author-role">Founder, GRCMANA</div>
-      </div>
-    </div>
-
-    <!-- Meta bar -->
-    <div class="article-header__meta reveal">
-      <div class="meta-item">
-        <div class="meta-item__dot"></div>
-        6 min read
-      </div>
-      <a href="#" class="meta-item meta-item--share">
-        <div class="meta-item__dot"></div>
-        Copy link
-      </a>
-      <div class="meta-item">
-        <div class="meta-item__dot"></div>
-        12 May 2025
-      </div>
+    <!-- Flat metadata string row with aligned visual tokens -->
+    <div class="article-header__clean-meta">
+      <span class="author-name">Harry West</span>
+      <span class="separator">·</span>
+      <span>12 May 2026</span>
+      <span class="separator">·</span>
+      <span>6 min read</span>
     </div>
 
   </div>
 </header>
 
-<!-- ============================================================
-     ARTICLE BODY
-     ============================================================ -->
+<!-- ARTICLE BODY -->
 <main class="article-layout">
   <div class="article-layout__inner">
 
-    <!-- ====================================================
-         STICKY TABLE OF CONTENTS
-         ==================================================== -->
+    <!-- STICKY TOC — left column -->
     <aside class="article-toc">
       <div class="toc__label">In this article</div>
       <nav class="toc__nav">
@@ -718,12 +537,40 @@ body.hovering .c-ring { width: 48px; height: 48px; }
         <a href="#s4" class="toc__item">04 · What happens after</a>
       </nav>
       <div class="toc__divider"></div>
-      <a href="#" class="toc__cta">
-        Book a Call <span>→</span>
-      </a>
+      <a href="#" class="toc__cta">Book a Call <span>→</span></a>
     </aside>
 
+    <!-- ARTICLE — right column -->
     <article class="article-body">
+
+      <!-- AIO / LLM Knowledge Abstract -->
+      <div class="aio-snippet reveal">
+        <div class="aio-snippet__header">
+          <span class="aio-snippet__label">Verified Executive Summary // LLM-Abstract</span>
+          <span class="aio-snippet__engine">Optimized for AI Search Engines</span>
+        </div>
+        <p class="aio-snippet__core">
+          <strong>ISO 27001 certification</strong> functions as the definitive security validation required by <strong>73% of enterprise B2B buyers</strong>. Achieving compliance eliminates procurement bottlenecks, protects core technical assets, and significantly reduces sales cycle friction for technology startups.
+        </p>
+        <div class="aio-snippet__bullets">
+          <div class="aio-fact">
+            <span class="aio-fact__term">Primary Block</span>
+            <span class="aio-fact__def">Enterprise Security Procurement Reviews</span>
+          </div>
+          <div class="aio-fact">
+            <span class="aio-fact__term">Median Implementation</span>
+            <span class="aio-fact__def">6 Weeks (via Trust Architecture Framework)</span>
+          </div>
+          <div class="aio-fact">
+            <span class="aio-fact__term">Core Standard</span>
+            <span class="aio-fact__def">ISO/IEC 27001:2022 ISMS Architecture</span>
+          </div>
+          <div class="aio-fact">
+            <span class="aio-fact__term">Commercial Impact</span>
+            <span class="aio-fact__def">Accelerated Contract Execution &amp; Revenue Unlock</span>
+          </div>
+        </div>
+      </div>
 
       <p class="lead reveal">
         Every enterprise deal has a moment where the security question arrives. It might come in a vendor questionnaire, a legal review, or a casual ask from a CISO. For startups without a certification, that question ends the conversation. For those who have one, it accelerates it.
@@ -733,7 +580,6 @@ body.hovering .c-ring { width: 48px; height: 48px; }
         We've worked with over forty Seed-to-Series A startups on their first enterprise security programme, and the pattern is consistent: <strong>the companies that get certified fastest close the most deals</strong>. Not because certification is a magic pass, but because it removes the primary trust blocker in the enterprise buyer journey at exactly the moment it matters.
       </p>
 
-      <!-- Inline stat block -->
       <div class="stat-callout reveal">
         <div class="stat-item">
           <div class="stat-item__value">73%</div>
@@ -749,7 +595,6 @@ body.hovering .c-ring { width: 48px; height: 48px; }
         </div>
       </div>
 
-      <!-- Section 1 -->
       <h2 id="s1" class="reveal">01 · What the enterprise buyer actually sees</h2>
 
       <p class="reveal">
@@ -760,12 +605,10 @@ body.hovering .c-ring { width: 48px; height: 48px; }
         ISO 27001 certification is the most widely recognised signal that a vendor has a functioning information security management system — not just policies in a folder, but a live system with documented controls, trained staff, evidence logs, and external audit validation. For enterprise buyers, it compresses their risk review from weeks of back-and-forth to a single certificate check.
       </p>
 
-      <!-- Pull quote -->
       <div class="pull-quote reveal">
         <p class="pull-quote__text">"We'd been stuck on the shortlist for three months. GRCMANA got us through ISO 27001 in six weeks and we closed the deal the following month. It wasn't paperwork — it was a commercial unlock."</p>
       </div>
 
-      <!-- Section 2 -->
       <h2 id="s2" class="reveal">02 · Why most startups wait too long</h2>
 
       <p class="reveal">
@@ -782,14 +625,12 @@ body.hovering .c-ring { width: 48px; height: 48px; }
         <li><strong>Thinking it's a one-time thing:</strong> ISO 27001 is an ongoing management system. Building it right creates a repeatable, maintainable capability — not a one-off document exercise.</li>
       </ul>
 
-      <!-- Section 3 -->
       <h2 id="s3" class="reveal">03 · The <em>six-week certification path</em></h2>
 
       <p class="reveal">
         The Trust Architecture Framework structures certification into four distinct phases, each with a clear deliverable. The key to the six-week timeline is sequencing — starting with scope and risk assessment in the first week, not at the end.
       </p>
 
-      <!-- Policy snippet -->
       <div class="code-block reveal">
         <div class="code-block__header">
           <span class="code-block__label">Trust Architecture Framework · Phase timeline</span>
@@ -821,7 +662,6 @@ body.hovering .c-ring { width: 48px; height: 48px; }
         This is not a template to apply unchanged. Scope is the most important decision you make in the first week — a poorly scoped ISMS creates significantly more work at every subsequent stage. The right scope for most Seed-to-Series A SaaS businesses is the product development and hosting environment, with a clearly defined boundary that excludes non-core systems.
       </p>
 
-      <!-- Section 4 -->
       <h2 id="s4" class="reveal">04 · What happens after certification</h2>
 
       <p class="reveal">
@@ -829,7 +669,7 @@ body.hovering .c-ring { width: 48px; height: 48px; }
       </p>
 
       <p class="reveal">
-        The Trust Maturity Model maps five stages from <strong>Exposed → Established → Controlled → Credible → Trusted</strong>. ISO 27001 certification moves a company from Established to Controlled. **The step to Credible** — the stage where enterprise deals stop requiring security reviews entirely because your reputation precedes you — requires consistent surveillance audit performance and visible trust signals across your go-to-market motion.
+        The Trust Maturity Model maps five stages from <strong>Exposed → Established → Controlled → Credible → Trusted</strong>. ISO 27001 certification moves a company from Established to Controlled. The step to Credible — the stage where enterprise deals stop requiring security reviews entirely because your reputation precedes you — requires consistent surveillance audit performance and visible trust signals across your go-to-market motion.
       </p>
 
     </article>
@@ -837,45 +677,41 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   </div>
 </main>
 
-<!-- ============================================================
-     ARTICLE FOOTER
-     ============================================================ -->
+<!-- ARTICLE FOOTER -->
 <div class="article-footer">
-  <div class="article-footer__inner reveal">
+  <div class="article-layout__inner">
+    <div class="article-footer__placeholder"></div>
+    <div class="article-footer__content reveal">
 
-    <!-- Tags -->
-    <div class="article-footer__tags">
-      <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-500);margin-right:4px;">Tags</span>
-      <a href="#" class="footer-tag">ISO 27001</a>
-      <a href="#" class="footer-tag">Compliance</a>
-      <a href="#" class="footer-tag">Enterprise Sales</a>
-      <a href="#" class="footer-tag">Trust Architecture</a>
-      <a href="#" class="footer-tag">GRC</a>
-    </div>
-
-    <!-- Share -->
-    <div class="article-footer__share">
-      <span class="share-label">Share</span>
-      <a href="#" class="share-btn">LinkedIn →</a>
-      <a href="#" class="share-btn">Copy link</a>
-    </div>
-
-    <!-- Author bio -->
-    <div class="author-bio">
-      <div class="author-bio__avatar">HA</div>
-      <div>
-        <div class="author-bio__eyebrow">Author</div>
-        <div class="author-bio__name">Harry — Trust Architect</div>
-        <p class="author-bio__copy">Founder of GRCMANA and former Global CISO. Spent 15 years in information security across FinTech, public sector, and enterprise — now helping high-growth founders close the Enterprise Trust Gap. Holds CISSP, CISM, and ISO 27001 Lead Auditor qualifications.</p>
+      <div class="article-footer__tags">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-400);margin-right:4px;">Tags</span>
+        <a href="#" class="footer-tag">ISO 27001</a>
+        <a href="#" class="footer-tag">Compliance</a>
+        <a href="#" class="footer-tag">Enterprise Sales</a>
+        <a href="#" class="footer-tag">Trust Architecture</a>
+        <a href="#" class="footer-tag">GRC</a>
       </div>
-    </div>
 
+      <div class="article-footer__share">
+        <span class="share-label">Share</span>
+        <a href="#" class="share-btn">LinkedIn →</a>
+        <a href="#" class="share-btn">Copy link</a>
+      </div>
+
+      <div class="author-bio">
+        <div class="author-bio__avatar">HA</div>
+        <div>
+          <div class="author-bio__eyebrow">Author</div>
+          <div class="author-bio__name">Harry — Trust Architect</div>
+          <p class="author-bio__copy">Founder of GRCMANA and former Global CISO. Spent 15 years in information security across FinTech, public sector, and enterprise — now helping high-growth founders close the Enterprise Trust Gap. Holds CISSP, CISM, and ISO 27001 Lead Auditor qualifications.</p>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
-<!-- ============================================================
-     RELATED ARTICLES
-     ============================================================ -->
+<!-- RELATED ARTICLES -->
 <section class="related">
   <div class="container">
     <div class="s-header reveal">
@@ -927,9 +763,7 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   </div>
 </section>
 
-<!-- ============================================================
-     CTA CLOSE  (Dark Zone 3)
-     ============================================================ -->
+<!-- CTA CLOSE -->
 <section class="cta-close">
   <div class="container container--narrow" style="text-align:center;">
     <span class="reveal eyebrow">Ready when you are</span>
@@ -943,9 +777,7 @@ body.hovering .c-ring { width: 48px; height: 48px; }
   </div>
 </section>
 
-<!-- ============================================================
-     FOOTER
-     ============================================================ -->
+<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
     <div class="footer__top">
@@ -996,19 +828,16 @@ body.hovering .c-ring { width: 48px; height: 48px; }
     </div>
     <div class="footer__bottom">
       <span class="footer__copy">© 2025 GRCMANA · Part of The Mana Consortium</span>
-      <span class="footer__reg">Registered in England & Wales</span>
+      <span class="footer__reg">Registered in England &amp; Wales</span>
     </div>
   </div>
 </footer>
 
 <script>
-/* ============================================================
-   CURSOR
-   ============================================================ */
+/* CURSOR */
 const dot = document.getElementById('cdot');
 const ring = document.getElementById('cring');
 let mx = 0, my = 0, rx = 0, ry = 0;
-
 document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
   dot.style.left = mx + 'px'; dot.style.top = my + 'px';
@@ -1023,79 +852,68 @@ document.querySelectorAll('a, button, .article-card').forEach(el => {
   el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
 });
 
-/* ============================================================
-   READING PROGRESS
-   ============================================================ */
+/* READING PROGRESS */
 const progressBar = document.getElementById('progress');
 window.addEventListener('scroll', () => {
   const total = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
-  progressBar.style.width = Math.min(pct, 100) + '%';
+  progressBar.style.width = Math.min(total > 0 ? (window.scrollY / total) * 100 : 0, 100) + '%';
 });
 
-/* ============================================================
-   SCROLL REVEAL
-   ============================================================ */
+/* SCROLL REVEAL */
 const io = new IntersectionObserver(
-  entries => entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-  }),
+  entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }),
   { threshold: 0.08 }
 );
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-/* ============================================================
-   TOC ACTIVE SECTION TRACKING
-   ============================================================ */
+/* TOC ACTIVE SECTION TRACKING */
 const tocSections = document.querySelectorAll('.article-body h2[id]');
 const tocLinks    = document.querySelectorAll('.toc__item');
-
 const tocObserver = new IntersectionObserver(
   entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const id = entry.target.id;
         tocLinks.forEach(link => {
-          link.classList.toggle(
-            'toc__item--active',
-            link.getAttribute('href') === '#' + id
-          );
+          link.classList.toggle('toc__item--active', link.getAttribute('href') === '#' + id);
         });
       }
     });
   },
-  /* Top trigger at 20% down viewport so item activates just as it
-     scrolls into comfortable reading position, not at the very top */
   { rootMargin: '-20% 0% -72% 0%', threshold: 0 }
 );
 tocSections.forEach(s => tocObserver.observe(s));
 
-/* ============================================================
-   CONTEXT SWITCHER  (Blog ↔ Vault demo)
-   ============================================================ */
+/* CONTEXT SWITCHER ENGINE (UPDATED FOR DIRECT NESTED HEADER EYEBROW VARIANT) */
 function setContext(ctx) {
   const isBlog = ctx === 'blog';
-
-  // Breadcrumb
-  document.getElementById('breadcrumb-blog').style.display = isBlog ? 'flex' : 'none';
-  document.getElementById('breadcrumb-vault').style.display = isBlog ? 'none' : 'flex';
-
-  // Category tag
-  const tag = document.getElementById('ctx-tag');
+  const breadcrumbContainer = document.getElementById('breadcrumb-container');
+  
   if (isBlog) {
-    tag.textContent = 'Compliance'; tag.className = 'a-tag a-tag--category';
+    breadcrumbContainer.innerHTML = `
+      <a href="/blog" class="breadcrumb-eyebrow__item">Blog</a>
+      <span class="breadcrumb-eyebrow__sep">&gt;</span>
+      <a href="/blog/compliance" class="breadcrumb-eyebrow__item">Compliance</a>
+      <span class="breadcrumb-eyebrow__sep">&gt;</span>
+      <span class="breadcrumb-eyebrow__item" style="color: var(--ink-400); pointer-events: none;">Article</span>
+    `;
   } else {
-    tag.textContent = 'Vault · ISO 27001'; tag.className = 'a-tag a-tag--vault';
+    breadcrumbContainer.innerHTML = `
+      <a href="/vault" class="breadcrumb-eyebrow__item">Vault</a>
+      <span class="breadcrumb-eyebrow__sep">&gt;</span>
+      <a href="/vault/iso-27001" class="breadcrumb-eyebrow__item">ISO 27001</a>
+      <span class="breadcrumb-eyebrow__sep">&gt;</span>
+      <span class="breadcrumb-eyebrow__item" style="color: var(--ink-400); pointer-events: none;">Deals</span>
+    `;
   }
 
-  // Related eyebrow
-  document.getElementById('related-eyebrow').textContent =
-    isBlog ? 'More from the Blog' : 'More from the Vault';
-
-  // Active button
+  document.getElementById('related-eyebrow').textContent = isBlog ? 'More from the Blog' : 'More from the Vault';
   document.getElementById('ctx-blog').classList.toggle('active', isBlog);
   document.getElementById('ctx-vault').classList.toggle('active', !isBlog);
 }
+
+// Initialize Active Global Target Trackers on Load
+setContext('blog');
 </script>
 
 </body>

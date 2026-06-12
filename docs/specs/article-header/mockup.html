@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article Header Component Component — GRCMANA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM DESIGN SYSTEM TOKENS
+   ============================================================ */
+:root {
+  --ink-950: #07080a; --ink-900: #0a0b0d; --ink-800: #111215;
+  --ink-700: #1a1c20; --ink-600: #252830; --ink-500: #363a44;
+  --ink-400: #4d5260; --ink-300: #6b7280; --ink-200: #9ca3af;
+  --white: #ffffff; --signal-500: #e8ff47;
+  --container-narrow: 720px;
+  --gutter: 48px; --section-y-hero: 160px;
+  --dur-fast: 150ms; --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--ink-900);
+  color: var(--white);
+  font-family: 'Syne', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   C-04 ARTICLE HEADER COMPONENT
+   ============================================================ */
+.article-header {
+  padding-top: calc(var(--section-y-hero) + 60px); /* Direct offset clearance for navbar layouts */
+  padding-bottom: 48px; 
+  padding-inline: var(--gutter);
+  position: relative; 
+  overflow: hidden;
+}
+
+.article-header__glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 600px 400px at 50% 60%, rgba(232,255,71,0.04) 0%, transparent 65%);
+}
+
+.article-header__inner {
+  position: relative; 
+  max-width: var(--container-narrow);
+  margin-inline: auto; 
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Layer 1: Context Navigation Eyebrow */
+.breadcrumb-eyebrow { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px; 
+  margin-bottom: 24px; 
+}
+.breadcrumb-eyebrow__item {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 400;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-200);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.breadcrumb-eyebrow__item:hover { color: var(--white); }
+.breadcrumb-eyebrow__sep { color: var(--ink-300); font-size: 9px; font-weight: 400; }
+
+/* Layer 2: Typographic Serif Title Statement */
+.article-header__title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(38px, 5.5vw, 64px); 
+  line-height: 1.05; letter-spacing: -0.025em; font-weight: 400;
+  color: var(--white); margin-bottom: 36px;
+}
+.article-header__title em { font-style: italic; color: var(--signal-500); }
+
+/* Layer 3: Pristine Metadata Row String */
+.article-header__clean-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+}
+.article-header__clean-meta .author-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: none;
+  letter-spacing: normal;
+}
+.article-header__clean-meta .separator {
+  color: var(--ink-600);
+  margin-inline: 8px;
+}
+</style>
+</head>
+<body>
+
+  <!-- PRODUCTION READY INDEPENDENT HEADER ELEMENT -->
+  <header class="article-header">
+    <div class="article-header__glow"></div>
+    <div class="article-header__inner">
+
+      <!-- Layer 1: Context Navigation Eyebrow -->
+      <nav class="breadcrumb-eyebrow">
+        <a href="/blog" class="breadcrumb-eyebrow__item">Blog</a>
+        <span class="breadcrumb-eyebrow__sep">&gt;</span>
+        <a href="/blog/compliance" class="breadcrumb-eyebrow__item">Compliance</a>
+        <span class="breadcrumb-eyebrow__sep">&gt;</span>
+        <span class="breadcrumb-eyebrow__item" style="color: var(--ink-400); pointer-events: none;">Article</span>
+      </nav>
+
+      <!-- Layer 2: Primary Headline -->
+      <h1 class="article-header__title">
+        Why ISO 27001 Is the<br>Fastest Way to<br><em>Close Enterprise Deals</em>
+      </h1>
+
+      <!-- Layer 3: Clean Metadata Row -->
+      <div class="article-header__clean-meta">
+        <span class="author-name">Harry West</span>
+        <span class="separator">·</span>
+        <span>12 May 2026</span>
+        <span class="separator">·</span>
+        <span>6 min read</span>
+      </div>
+
+    </div>
+  </header>
+
+</body>
+</html>
