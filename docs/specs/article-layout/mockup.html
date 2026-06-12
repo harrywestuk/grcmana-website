@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article Layout Grid Reference — GRCMANA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS & CORE SYSTEM (Directly from spec.md)
+   ============================================================ */
+:root {
+  --ink-950: #07080a; --ink-900: #0a0b0d; --ink-800: #111215;
+  --ink-300: #6b7280; --ink-100: #d1d5db; --white: #ffffff;
+  --signal-500: #e8ff47;
+  --gutter: 48px;
+  --border: rgba(255,255,255,0.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--ink-900); color: var(--white);
+  font-family: 'Syne', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.65;
+  padding-block: 80px;
+  /* CRITICAL: Non-negotiable per spec to keep sticky tracking unbroken */
+  overflow-x: clip; 
+}
+
+/* ============================================================
+   THE PRIMARY TWO-COLUMN SPECIFIED ENGINE
+   ============================================================ */
+.article-layout {
+  padding-inline: var(--gutter);
+}
+
+.article-layout__inner {
+  max-width: 1060px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 720px);
+  gap: 64px;
+}
+
+/* Structural Breakpoint at 1100px */
+@media (max-width: 1100px) {
+  .article-layout__inner {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+  }
+}
+
+/* ============================================================
+   COLUMN 1: STICKY TOC
+   ============================================================ */
+.toc-sidebar {
+  grid-column: 1;
+  position: sticky;
+  top: 100px; /* Accommodates global header height offsets */
+  height: fit-content;
+}
+
+.toc-placeholder-box {
+  border: 1px dashed var(--ink-300);
+  padding: 16px;
+  color: var(--ink-300);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .toc-sidebar { display: none; } /* Drop layout container at breakpoint cleanly */
+}
+
+/* ============================================================
+   COLUMN 2: MAIN CANVAS & COMPONENT WRAPPERS
+   ============================================================ */
+.article-body-canvas {
+  grid-column: 2;
+}
+
+@media (max-width: 1100px) {
+  .article-body-canvas { grid-column: 1; }
+}
+
+.mock-content-block {
+  background: var(--ink-800);
+  border: 1px solid var(--border);
+  padding: 40px;
+  margin-bottom: 40px;
+}
+
+/* ============================================================
+   THE SHARED FOOTER ARCHITECTURE ENGINE
+   ============================================================ */
+.article-footer-layout {
+  margin-top: 80px;
+  border-top: 1px solid var(--border);
+  padding-top: 40px;
+}
+
+/* Inherits alignment parameters perfectly via layout shared grid classes */
+.article-footer-layout .article-layout__inner {
+  /* Inherits structural multi-column grid declarations from above */
+}
+
+.article-footer__placeholder {
+  grid-column: 1;
+}
+
+.article-footer__content {
+  grid-column: 2;
+  background: rgba(255,255,255,0.02);
+  border: 1px dotted var(--ink-300);
+  padding: 24px;
+}
+
+@media (max-width: 1100px) {
+  .article-footer__placeholder { display: none; }
+  .article-footer__content { grid-column: 1; }
+}
+</style>
+</head>
+<body>
+
+<main class="article-layout">
+  <div class="article-layout__inner">
+
+    <aside class="toc-sidebar">
+      <div class="toc-placeholder-box">
+        [Sticky TOC Sidebar Container]<br>
+        Width: 220px<br>
+        Position: Sticky (Top: 100px)
+      </div>
+    </aside>
+
+    <section class="article-body-canvas">
+      <div class="mock-content-block">
+        <h2>Article Right-Column Canvas Container</h2>
+        <p style="margin-top: 12px; color: var(--ink-300);">
+          This block holds your content tree, including typography and embedded modules. It scales to a strict maximum execution limit of 720px width boundaries to enforce exact structural control.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="article-layout article-footer-layout">
+  <div class="article-layout__inner">
+    <div class="article-footer__placeholder"></div>
+    
+    <div class="article-footer__content">
+      <h4>Integrated Article Footer Component</h4>
+      <p style="color: var(--ink-300); font-size: 13px; margin-top: 4px;">
+        Aligned seamlessly via an empty column placeholder to map flush against the article canvas edge above without offset mismatches.
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

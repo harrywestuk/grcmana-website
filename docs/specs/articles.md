@@ -73,6 +73,7 @@ Use the **Status** column to map each component against what currently exists in
 | C-15 | Footer                    | Global        | `[ ] exists` `[ ] partial` `[ ] new` |
 
 **Type definitions:**
+
 - **Global** — already built for the homepage; import and reuse, no modification.
 - **Page-level** — behaviour scoped to the article page only; may not have a homepage equivalent.
 - **Page-specific** — unique to the article template.
@@ -726,24 +727,25 @@ The `rootMargin: '-20% 0% -72% 0%'` creates a trigger band from 20% to 28% down 
 
 ### Article collection (PayloadCMS)
 
-| Field              | Type                               | Required | Notes                                    |
-| ------------------ | ---------------------------------- | -------- | ---------------------------------------- |
-| `title`            | Rich text (inline)                 | ✓        | Supports `<em>` for Signal italic accent |
-| `slug`             | Text (unique)                      | ✓        | Auto-generated from title                |
-| `deck`             | Text                               | ✓        | Subtitle. Max ~120 chars                 |
-| `category`         | Relationship → Category            | ✓        | Single category                          |
-| `tags`             | Relationship → Tag (array)         | —        | Max ~5                                   |
-| `author`           | Relationship → Author              | ✓        |                                          |
-| `publishedAt`      | Date                               | ✓        |                                          |
-| `readingTime`      | Number                             | ✓        | Minutes. Manually set or auto-calculated |
-| `deck`             | Text                               | ✓        | Header subtitle, ~120 chars              |
-| `aioSummary.core`  | Rich text                          | —        | AIO snippet summary paragraph            |
-| `aioSummary.facts` | Array: `{term, definition}`        | —        | Max 4 items                              |
-| `content`          | Blocks (rich text + custom blocks) | ✓        | See block types below                    |
-| `relatedArticles`  | Relationship → Article (array)     | —        | Max 3                                    |
-| `seo.title`        | Text                               | —        | Overrides default title tag              |
-| `seo.description`  | Text                               | —        |                                          |
-| `seo.ogImage`      | Media                              | —        |                                          |
+| Field                 | Type                               | Required | Notes                                    |
+| --------------------- | ---------------------------------- | -------- | ---------------------------------------- |
+| `title`               | Rich text (inline)                 | ✓        | Supports `<em>` for Signal italic accent |
+| `slug`                | Text (unique)                      | ✓        | Auto-generated from title                |
+| `deck`                | Text                               | ✓        | Subtitle. Max ~120 chars                 |
+| `category`            | Relationship → Category            | ✓        | Single category                          |
+| `tags`                | Relationship → Tag (array)         | —        | Max ~5                                   |
+| `author`              | Relationship → Author              | ✓        |                                          |
+| `publishedAt`         | Date                               | ✓        |                                          |
+| `readingTime`         | Number                             | ✓        | Minutes. Manually set or auto-calculated |
+| `deck`                | Text                               | ✓        | Header subtitle, ~120 chars              |
+| `aioSsnippet.heading` | Text                               | —        | AIO snippet heading (e.g. Key Takeaways) |
+| `aioSsnippet.summary` | Rich text                          | —        | AIO snippet summary paragraph            |
+| `aioSsnippet.facts`   | Array: `{term, definition}`        | —        | Max 4 items                              |
+| `content`             | Blocks (rich text + custom blocks) | ✓        | See block types below                    |
+| `relatedArticles`     | Relationship → Article (array)     | —        | Max 3                                    |
+| `seo.title`           | Text                               | —        | Overrides default title tag              |
+| `seo.description`     | Text                               | —        |                                          |
+| `seo.ogImage`         | Media                              | —        |                                          |
 
 ### Content block types
 
