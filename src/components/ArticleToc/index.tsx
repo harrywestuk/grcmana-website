@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 import type { Article } from '@/payload-types'
 
@@ -41,7 +42,7 @@ export function ArticleToc({ toc }: Props): React.ReactElement | null {
 
   return (
     <nav aria-label="Table of contents">
-      <span className="eyebrow mb-4">Contents</span>
+      <span className="eyebrow mb-4">Inside This Article</span>
       <ol>
         {h2Entries.map((entry) => {
           if (!entry.anchor || !entry.text) return null
@@ -63,6 +64,14 @@ export function ArticleToc({ toc }: Props): React.ReactElement | null {
           )
         })}
       </ol>
+
+      <Link
+        href="/contact"
+        className="flex items-center justify-between mt-6 px-[14px] py-[9px] font-mono text-[9px] font-medium tracking-[0.08em] uppercase bg-signal-500 hover:bg-signal-400 text-ink-900 transition-colors duration-[150ms]"
+      >
+        Book a Call
+        <span>→</span>
+      </Link>
     </nav>
   )
 }
