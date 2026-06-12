@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Author Bio Component Mockup — GRCMANA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM TOKENS
+   ============================================================ */
+:root {
+  --ink-900: #0a0b0d; 
+  --ink-800: #111215;
+  --ink-700: #1a1c20; 
+  --ink-300: #6b7280; 
+  --white: #ffffff;
+  --signal-500: #e8ff47;
+  --border: rgba(255,255,255,0.05);
+  --gutter: 48px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--ink-900); color: var(--white);
+  font-family: 'Syne', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.65;
+  padding: 80px var(--gutter);
+}
+
+/* Container simulating the right-hand column width allocation */
+.sandbox-column {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+/* ============================================================
+   C-11 AUTHOR BIO CARD COMPONENT
+   ============================================================ */
+.author-bio { 
+  background: var(--ink-800); 
+  border: 1px solid var(--border); 
+  padding: 28px; 
+  display: flex; 
+  gap: 20px; 
+  align-items: flex-start; 
+}
+
+/* Circular profile element breaks up the flat text look */
+.author-bio__avatar {
+  width: 52px; 
+  height: 52px; 
+  border-radius: 50%;
+  background: var(--ink-700); 
+  border: 1px solid var(--border);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-family: 'DM Mono', monospace; 
+  font-size: 14px; 
+  font-weight: 500;
+  color: var(--signal-500); 
+  flex-shrink: 0;
+}
+
+.author-bio__content {
+  flex: 1;
+}
+
+.author-bio__eyebrow {
+  font-family: 'DM Mono', monospace; 
+  font-size: 9px; 
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+  margin-bottom: 4px;
+}
+
+.author-bio__name { 
+  font-family: 'Syne', sans-serif; 
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--white); 
+  margin-bottom: 8px; 
+}
+
+.author-bio__copy { 
+  font-family: 'Syne', sans-serif; 
+  font-size: 14px; 
+  color: var(--ink-300); 
+  line-height: 1.6; 
+}
+
+/* Responsive collapse for smaller screens */
+@media (max-width: 550px) {
+  .author-bio {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sandbox-column">
+
+  <!-- Author Bio Card Component[cite: 2] -->
+  <div class="author-bio">
+    <!-- Initial/Headshot Slot[cite: 2] -->
+    <div class="author-bio__avatar">HW</div>
+    
+    <div class="author-bio__content">
+      <div class="author-bio__eyebrow">Author</div>
+      <h3 class="author-bio__name">Harry West</h3>
+      <p class="author-bio__copy">
+        Harry is a Global CISO and ex-Senior Leader at Microsoft and Rackspace with over 20 years leading security and compliance programs for financial services and critical infrastructure. He holds CCSP and ISO 27001 Lead Implementer certifications and specializes in building scalable GRC programs that close the Enterprise Trust Gap.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
