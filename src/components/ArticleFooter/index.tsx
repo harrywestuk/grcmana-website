@@ -7,13 +7,26 @@ type Props = {
   article: Article
 }
 
+function getInitials(name: string | null | undefined): string {
+  return (name ?? '')
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join('')
+}
+
 export function ArticleFooter({ article }: Props): React.ReactElement | null {
   const categories = (article.categories ?? []).filter(
     (c): c is Category => typeof c === 'object',
   )
   const authors = article.populatedAuthors ?? []
+  const author = authors[0]
 
-  if (!categories.length && !authors.length) return null
+  if (!categories.length && !author) return null
+
+  const avatar =
+    author?.avatar && typeof author.avatar === 'object' ? (author.avatar as Media) : null
 
   return (
     <div className="article-footer__content">
@@ -33,36 +46,20 @@ export function ArticleFooter({ article }: Props): React.ReactElement | null {
         </div>
       )}
 
-      {authors.length > 0 && (
-        <div>
-          <span className="eyebrow mb-4">
-            {authors.length === 1 ? 'Author' : 'Authors'}
-          </span>
-          <div className="flex flex-col gap-5">
-            {authors.map((author) => {
-              const avatar =
-                author.avatar && typeof author.avatar === 'object'
-                  ? (author.avatar as Media)
-                  : null
-              return (
-                <div key={author.id} className="flex gap-4 items-start">
-                  {avatar && (
-                    <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden">
-                      <MediaComponent
-                        resource={avatar}
-                        imgClassName="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-sm font-semibold text-ink-100">{author.name}</p>
-                    {author.bio && (
-                      <p className="text-[13px] text-ink-300 mt-1 leading-relaxed">{author.bio}</p>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
+      {author && (
+        <div className="author-bio">
+          <div className="author-bio__avatar">
+            {avatar ? (
+              <MediaComponent resource={avatar} imgClassName="w-full h-full object-cover" />
+            ) : (
+              <span className="author-bio__initials">{getInitials(author.name)}</span>
+            )}
+          </div>
+
+          <div className="author-bio__content">
+            <div className="author-bio__eyebrow">Author</div>
+            <h3 className="author-bio__name">{author.name}</h3>
+            {author.bio && <p className="author-bio__copy">{author.bio}</p>}
           </div>
         </div>
       )}
