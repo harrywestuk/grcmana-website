@@ -2,9 +2,9 @@
 
 ## 1. Executive Context & Revenue Goals
 
-* **Mission:** To reduce risk, build resilience, and accelerate trust for **Cloud-Native Tech Startups**[cite: 1].
+* **Mission:** To reduce risk, build resilience, and accelerate trust for **Regulated Service Providers**[cite: 1].
 * **Core Pillars:** Speed, Trust, and "GRC as a Revenue Enabler"[cite: 1].
-* **Target State:** A high-conversion B2B engine targeting **Tech Founders** (Buyers) and **Implementation Heroes** (Users).
+* **Target State:** A high-conversion B2B engine targeting **Founders** (Buyers), **Security Leaders** (Security Owners), **Technology Leaders** (Technology Owners) and **Implementation Heroes** (Users).
 * **Revenue Target:** £25K/month via:
   * **Passive:** £49/mo "The Resilience Circle" community.
   * **Affiliate:** 20% commissions (Sprinto, Qualys, KnowBe4).
