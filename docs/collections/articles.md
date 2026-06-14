@@ -291,6 +291,6 @@ versions: {
 | Date       | Change                                                                                                                                                   |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-06-09 | Initial spec created. Migrated and extended from `posts` collection                                                                                      |
-| 2026-06-09 | Removed vault fields (`type`, `gated`, `difficulty`). Vaults moved to discrete collections                                                               |
+| 2026-06-09 | Removed vault fields (`type`, `gated`, `difficulty`). Vaults moved to dedicated collection                                                               |
 | 2026-06-09 | Added: imports, defaultPopulate, admin.preview, relatedArticles filterOptions note, populatedAuthors sub-fields, label:false on content, migration notes |
 | 2026-06-09 | Closed open questions: TOC auto-only, relatedArticles manual curation, populatedAuthors fields confirmed                                                 |
